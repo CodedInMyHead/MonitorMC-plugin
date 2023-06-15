@@ -1,23 +1,40 @@
 package com.codedinmyhead.monitormc.monitormc;
 
+import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
+import com.codedinmyhead.monitormc.monitormc.listener.ArrowHitListener;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Logger;
-
 public final class MonitorMC extends JavaPlugin {
+
+    public static MonitorMC INSTANCE;
+
+    public MonitorMC() {
+        INSTANCE = this;
+    }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        Logger logger = this.getLogger();
-        logger.info("STARTUP");
-
+        registerEvents();
+        registerCommands();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Logger logger = this.getLogger();
-        logger.info("SHUTDOWN");
     }
+
+    public void registerEvents() {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(new ArrowHitListener(), this);
+    }
+
+    public void registerCommands() {
+
+        Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
+    }
+
+
 }
