@@ -2,9 +2,13 @@ package com.codedinmyhead.monitormc.monitormc;
 
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.listener.ArrowHitListener;
+import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
+import com.codedinmyhead.monitormc.monitormc.monitoring.MetricValue;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Arrays;
 
 public final class MonitorMC extends JavaPlugin {
 
@@ -14,11 +18,20 @@ public final class MonitorMC extends JavaPlugin {
         INSTANCE = this;
     }
 
+    public MetricService metricService;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         registerEvents();
         registerCommands();
+
+        metricService = MetricService.getInstance();
+
+        metricService.initializeMetrics(Arrays.asList(MetricValue.values()));
+
+
+
     }
 
     @Override
