@@ -20,7 +20,7 @@ public class MetricService {
 
     final static String EMPTY = "";
 
-    final static String NAME_WARNING = "Attempted to increase player-specific metric but no UUID was supplied. Skipping..";
+    final static String NAME_WARNING = "Attempted to increase player-specific metric but no playerName was supplied. Skipping..";
 
     private static MetricService INSTANCE;
     private static PrometheusMeterRegistry registry;
@@ -56,27 +56,27 @@ public class MetricService {
         return INSTANCE;
     }
 
-    public void initializeMetrics(List<IMonitoringMetric> metrics) {
+    public void initializeMetrics(final List<IMonitoringMetric> metrics) {
         metrics.stream().filter(IMonitoringMetric::getGlobal).forEach(this::initializeMetric);
     }
 
-    private void initializeMetric(IMonitoringMetric metric) {
+    private void initializeMetric(final IMonitoringMetric metric) {
         globalMetricMap.put(metric.getKey(), registry.counter(metric.getKey(), metric.getTags()));
     }
 
-    public void incrementCounter(IMonitoringMetric metric) {
+    public void incrementCounter(final IMonitoringMetric metric) {
         incrementCounter(metric, 1);
     }
 
-    public void incrementCounter(IMonitoringMetric metric, String name) {
+    public void incrementCounter(final IMonitoringMetric metric, final String name) {
         incrementCounter(metric, 1, name);
     }
 
-    public void incrementCounter(IMonitoringMetric metric, int count) {
+    public void incrementCounter(final IMonitoringMetric metric, final int count) {
        incrementCounter(metric, count, null);
     }
 
-    public void incrementCounter(IMonitoringMetric metric, int count, String name) {
+    public void incrementCounter(final IMonitoringMetric metric, final int count, final String name) {
 
         if (metric.getGlobal()) {
             ((Counter) globalMetricMap.get(metric.getKey())).increment(count);
