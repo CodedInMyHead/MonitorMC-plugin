@@ -1,12 +1,13 @@
 package com.codedinmyhead.monitormc.monitormc;
 
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
-import com.codedinmyhead.monitormc.monitormc.listener.ArrowHitListener;
-import com.codedinmyhead.monitormc.monitormc.listener.PlayerJoinListener;
+import com.codedinmyhead.monitormc.monitormc.listeners.ArrowHitListener;
+import com.codedinmyhead.monitormc.monitormc.listeners.PlayerJoinListener;
+import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,16 +25,9 @@ public final class MonitorMC extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         registerEvents();
         registerCommands();
-
-        metricService = MetricService.getInstance();
-
-        metricService.initializeMetrics(Arrays.asList(MetricsEnum.values()));
-
-
-
+        MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
     }
 
     @Override
@@ -43,8 +37,13 @@ public final class MonitorMC extends JavaPlugin {
 
     public void registerEvents() {
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new ArrowHitListener(), this);
-        pluginManager.registerEvents(new PlayerJoinListener(), this);
+
+        Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
+            try {
+                pluginManager.registerEvents((Listener) entry.getClassType().getDeclaredConstructor().newInstance(), this);
+
+            } catch (Exception e) {}
+        });
     }
 
     public void registerCommands() {

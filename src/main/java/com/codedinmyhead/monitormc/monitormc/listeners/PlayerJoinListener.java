@@ -1,4 +1,4 @@
-package com.codedinmyhead.monitormc.monitormc.listener;
+package com.codedinmyhead.monitormc.monitormc.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

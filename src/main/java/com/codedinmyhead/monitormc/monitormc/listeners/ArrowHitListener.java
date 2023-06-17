@@ -1,4 +1,4 @@
-package com.codedinmyhead.monitormc.monitormc.listener;
+package com.codedinmyhead.monitormc.monitormc.listeners;
 
 import com.codedinmyhead.monitormc.monitormc.MonitorMC;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
