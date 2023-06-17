@@ -1,10 +1,9 @@
 package com.codedinmyhead.monitormc.monitormc.monitoring;
 
 import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 
-public enum Metrics implements IMonitoringMetric {
+public enum MetricsEnum implements IMonitoringMetric {
 
     ARROW_HIT("minecraft.arrowhit", Counter.class, null, true),
     TIMES_SLEPT("times_slept", Counter.class, null, false);
@@ -13,7 +12,7 @@ public enum Metrics implements IMonitoringMetric {
     private final Tags tags;
     private final boolean global;
 
-    Metrics(String key, Class<?> metricType, Tags tags, boolean global) {
+    MetricsEnum(String key, Class<?> metricType, Tags tags, boolean global) {
         this.key = key;
         this.metricType = metricType;
         this.tags = tags;

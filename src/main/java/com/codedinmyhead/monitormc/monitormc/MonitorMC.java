@@ -4,7 +4,7 @@ import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.listener.ArrowHitListener;
 import com.codedinmyhead.monitormc.monitormc.listener.MichaCommandListener;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
-import com.codedinmyhead.monitormc.monitormc.monitoring.Metrics;
+import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
@@ -33,7 +33,7 @@ public final class MonitorMC extends JavaPlugin {
 
         metricService = MetricService.getInstance();
 
-        metricService.initializeMetrics(Arrays.asList(Metrics.values()));
+        metricService.initializeMetrics(Arrays.asList(MetricsEnum.values()));
 
 
 

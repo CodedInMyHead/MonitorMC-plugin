@@ -1,7 +1,7 @@
 package com.codedinmyhead.monitormc.monitormc.listener;
 
 import com.codedinmyhead.monitormc.monitormc.MonitorMC;
-import com.codedinmyhead.monitormc.monitormc.monitoring.Metrics;
+import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -22,7 +22,7 @@ public class ArrowHitListener implements Listener {
                 if(a.getShooter() instanceof Player) {
                     Player p = (Player) a.getShooter();
                     p.sendMessage("You hit a red wool block!");
-                    MonitorMC.INSTANCE.metricService.incrementCounter(Metrics.ARROW_HIT);
+                    MonitorMC.INSTANCE.metricService.incrementCounter(MetricsEnum.ARROW_HIT);
                 }
             }
         }
