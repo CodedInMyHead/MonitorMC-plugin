@@ -24,8 +24,6 @@ public final class MonitorMC extends JavaPlugin {
         INSTANCE = this;
     }
 
-    public MetricService metricService;
-
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
 
@@ -35,8 +33,6 @@ public final class MonitorMC extends JavaPlugin {
         registerCommands();
 
         createAccuracyBow();
-
-        metricService = MetricService.getInstance();
 
         MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
 

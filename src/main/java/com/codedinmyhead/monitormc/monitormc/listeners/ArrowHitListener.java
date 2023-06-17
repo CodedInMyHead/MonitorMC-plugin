@@ -1,6 +1,7 @@
 package com.codedinmyhead.monitormc.monitormc.listeners;
 
 import com.codedinmyhead.monitormc.monitormc.MonitorMC;
+import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -15,6 +16,8 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class ArrowHitListener implements Listener {
 
+    final MetricService metricService = MetricService.getInstance();
+
     @EventHandler
     public void onArrowHit(ProjectileHitEvent event) {
         if(event.getEntity() instanceof Arrow ) {
@@ -25,11 +28,11 @@ public class ArrowHitListener implements Listener {
                 Player p = (Player) a.getShooter();
                 if(countShotAsTry(p)) {
                     if(hitBlock.getType().equals(MonitorMC.INSTANCE.targetBlockMaterial)) {
-                        MonitorMC.INSTANCE.metricService.incrementCounter(MetricsEnum.ARROW_HIT);
+                        metricService.incrementCounter(MetricsEnum.ARROW_HIT);
                         p.sendMessage("You hit a target!");
                         p.playNote(p.getLocation(), Instrument.BELL, Note.natural(1, Note.Tone.E));
                     } else {
-                        MonitorMC.INSTANCE.metricService.incrementCounter(MetricsEnum.ARROW_MISS);
+                        metricService.incrementCounter(MetricsEnum.ARROW_MISS);
                         p.sendMessage("You missed a target!");
                     }
                 }
