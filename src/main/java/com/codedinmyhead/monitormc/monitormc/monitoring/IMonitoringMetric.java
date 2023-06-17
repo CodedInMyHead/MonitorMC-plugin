@@ -8,14 +8,6 @@ public interface IMonitoringMetric {
     Class<?> getMetricType();
     Tags getTags();
 
-    /*
-    default String getName() {
-        if(this.getClass().isEnum()) {
-            return ((Enum) this).name();
-        }
-        return null;
-    }
-
-     */
+    boolean getGlobal();
 
 }

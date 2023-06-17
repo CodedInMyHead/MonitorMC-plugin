@@ -4,17 +4,20 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 
-public enum MetricValue implements IMonitoringMetric {
+public enum Metrics implements IMonitoringMetric {
 
-    ARROW_HIT("minecraft.arrowhit", Counter.class, Tags.of(Tag.of("player", "baum")));
+    ARROW_HIT("minecraft.arrowhit", Counter.class, null, true),
+    TIMES_SLEPT("times_slept", Counter.class, null, false);
     private final String key;
     private final Class<?> metricType;
     private final Tags tags;
+    private final boolean global;
 
-    MetricValue(String key, Class<?> metricType, Tags tags) {
+    Metrics(String key, Class<?> metricType, Tags tags, boolean global) {
         this.key = key;
         this.metricType = metricType;
         this.tags = tags;
+        this.global = global;
     }
 
     @Override
@@ -30,5 +33,10 @@ public enum MetricValue implements IMonitoringMetric {
     @Override
     public Tags getTags() {
         return tags;
+    }
+
+    @Override
+    public boolean getGlobal() {
+        return global;
     }
 }
