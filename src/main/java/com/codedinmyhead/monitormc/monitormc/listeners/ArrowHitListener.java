@@ -2,7 +2,9 @@ package com.codedinmyhead.monitormc.monitormc.listeners;
 
 import com.codedinmyhead.monitormc.monitormc.MonitorMC;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
+import org.bukkit.Instrument;
 import org.bukkit.Material;
+import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -18,14 +20,25 @@ public class ArrowHitListener implements Listener {
         if(event.getEntity() instanceof Arrow ) {
             Arrow a = (Arrow) event.getEntity();
             Block hitBlock = event.getHitBlock();
-            if(hitBlock.getType().equals(Material.RED_WOOL)) {
-                if(a.getShooter() instanceof Player) {
-                    Player p = (Player) a.getShooter();
-                    p.sendMessage("You hit a red wool block!");
-                    MonitorMC.INSTANCE.metricService.incrementCounter(MetricsEnum.ARROW_HIT);
+
+            if(a.getShooter() instanceof Player) {
+                Player p = (Player) a.getShooter();
+                if(countShotAsTry(p)) {
+                    if(hitBlock.getType().equals(MonitorMC.INSTANCE.targetBlockMaterial)) {
+                        MonitorMC.INSTANCE.metricService.incrementCounter(MetricsEnum.ARROW_HIT);
+                        p.sendMessage("You hit a target!");
+                        p.playNote(p.getLocation(), Instrument.BELL, Note.natural(1, Note.Tone.E));
+                    } else {
+                        MonitorMC.INSTANCE.metricService.incrementCounter(MetricsEnum.ARROW_MISS);
+                        p.sendMessage("You missed a target!");
+                    }
                 }
             }
         }
+    }
+
+    private boolean countShotAsTry(Player p) {
+        return p.getInventory().getItemInMainHand().equals(MonitorMC.INSTANCE.accuracyBow);
     }
 
 }

@@ -7,3 +7,7 @@ authors: [ Micha, Ole, Shanine ]
 commands:
   monitormc:
     description: Test command
+  accuracybow:
+      description: Gives Player the accuracy bow
+      aliases:
+        - abow

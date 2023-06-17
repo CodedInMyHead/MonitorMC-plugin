@@ -6,6 +6,7 @@ import io.micrometer.core.instrument.Tags;
 public enum MetricsEnum implements IMonitoringMetric {
 
     ARROW_HIT("minecraft.arrowhit", Counter.class, null, true),
+    ARROW_MISS("minecraft.arrowmiss", Counter.class, null, true),
     TIMES_SLEPT("times_slept", Counter.class, null, false);
     private final String key;
     private final Class<?> metricType;
