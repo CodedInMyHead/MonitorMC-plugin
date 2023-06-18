@@ -4,6 +4,8 @@ main: com.codedinmyhead.monitormc.monitormc.MonitorMC
 api-version: '1.20'
 prefix: MonitorMC
 authors: [ Micha, Ole, Shanine ]
+softdepend:
+  - dynmap
 commands:
   monitormc:
     description: Test command
