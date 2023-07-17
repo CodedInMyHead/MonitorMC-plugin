@@ -1,5 +1,6 @@
 package com.codedinmyhead.monitormc.monitormc;
 
+import com.codedinmyhead.monitormc.monitormc.commands.DashboardGuiCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
@@ -58,6 +59,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        Bukkit.getPluginCommand("dashboards").setExecutor(new DashboardGuiCommand());
     }
 
     public void createAccuracyBow() {

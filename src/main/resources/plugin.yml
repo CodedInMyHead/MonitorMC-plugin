@@ -11,3 +11,5 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  dashboards:
+      description: Shows predefined dashboards idk
