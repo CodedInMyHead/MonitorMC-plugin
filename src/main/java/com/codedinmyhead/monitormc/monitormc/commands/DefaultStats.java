@@ -19,7 +19,7 @@ public class DefaultStats implements CommandExecutor {
             sender.sendMessage("This command can only be executed by a player");
             return false;
         }
-
+        setInventory(sender);
         return true;
     }
 

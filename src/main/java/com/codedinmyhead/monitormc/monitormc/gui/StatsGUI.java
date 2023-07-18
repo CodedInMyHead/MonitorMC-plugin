@@ -104,7 +104,7 @@ public class StatsGUI implements Listener {
             case DIAMOND_SWORD:
                 int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
                 int mobKills = p.getStatistic(Statistic.MOB_KILLS);
-                lore = String.format("§9Player Kills: §b%d%n§9Mob Kills: %d (\033[3m§bClick §9to see all Mob specific kills\033[3m)", playerKills, mobKills);
+                lore = String.format("§9Player Kills: §b%d§9Mob Kills: %d (\033[3m§bClick §9to see all Mob specific kills\033[3m)", playerKills, mobKills);
                 break;
             case SKELETON_SKULL:
                 int totalDeaths = p.getStatistic(Statistic.DEATHS);
