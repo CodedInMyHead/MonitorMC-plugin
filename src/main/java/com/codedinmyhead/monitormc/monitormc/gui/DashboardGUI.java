@@ -1,5 +1,8 @@
 package com.codedinmyhead.monitormc.monitormc.gui;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -12,48 +15,51 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class DashboardGUI implements Listener {
 
     private final Inventory inv;
 
+    //TODO: Change lol
+    private final String GRAFANA_URL = "localhost:3000";
+    private HashMap<Integer, UrlItem> urlMap = new HashMap<>();
+
     public DashboardGUI() {
-        // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
         inv = Bukkit.createInventory(null, 9*4, "Dashboards");
 
-        // Put the items into the inventory
-        initializeItems();
+        initializeItemsAndUrlMap();
     }
 
-    // You can call this whenever you want to put the items in
-    public void initializeItems() {
-        inv.setItem(0, createGuiItem(Material.CREEPER_HEAD, "Deaths", "§aShow Death statistics"));
-        inv.setItem(2, createGuiItem(Material.ZOMBIE_HEAD, "§aShanine"));
+    public void initializeItemsAndUrlMap() {
+        urlMap.put(0, new UrlItem("deaths/all", Material.CREEPER_HEAD, "Deaths", "lore1", "lore2"));
+        urlMap.put(2, new UrlItem("dashboard/new?orgId=1&editPanel=1", Material.ZOMBIE_HEAD, "Test Dashboard"));
+
+        urlMap.entrySet().forEach(e -> {
+            UrlItem ui = e.getValue();
+            inv.setItem(e.getKey(), createGuiItem(ui.itemMaterial, ui.itemName, ui.lore));
+        });
     }
 
-    // Nice little method to create a gui item with a custom name, and description
-    protected ItemStack createGuiItem(final Material material, final String name, final String... lore) {
+
+    protected ItemStack createGuiItem(final Material material, final String name, final List<String> lore) {
         final ItemStack item = new ItemStack(material, 1);
         final ItemMeta meta = item.getItemMeta();
 
-        // Set the name of the item
         meta.setDisplayName(name);
-
-        // Set the lore of the item
-        meta.setLore(Arrays.asList(lore));
-
+        meta.setLore(lore);
         item.setItemMeta(meta);
 
         return item;
     }
 
-    // You can open the inventory with this
     public void openInventory(final HumanEntity ent) {
         ent.openInventory(inv);
     }
 
-    // Check for clicks on items
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (!e.getInventory().equals(inv)) return;
@@ -62,20 +68,43 @@ public class DashboardGUI implements Listener {
 
         final ItemStack clickedItem = e.getCurrentItem();
 
-        // verify current item is not null
         if (clickedItem == null || clickedItem.getType().isAir()) return;
 
         final Player p = (Player) e.getWhoClicked();
 
-        // Using slots click is a best option for your inventory click's
-        p.sendMessage("You clicked at slot " + e.getRawSlot());
+        int slot = e.getRawSlot();
+        if(urlMap.containsKey(slot)) {
+            openUrl(p, urlMap.get(slot).url);
+            p.closeInventory();
+        }
+
     }
 
-    // Cancel dragging in our inventory
     @EventHandler
     public void onInventoryClick(final InventoryDragEvent e) {
         if (e.getInventory().equals(inv)) {
             e.setCancelled(true);
+        }
+    }
+
+    //TODO send link with a book (needs packets)
+    private void openUrl(Player p, String url) {
+        TextComponent t = Component.text("Click here to open the Dashboard!");
+        t.clickEvent(ClickEvent.openUrl(url));
+        p.sendMessage(t);
+    }
+
+    private class UrlItem {
+        private Material itemMaterial;
+        private String itemName;
+        private List<String> lore;
+        private String url;
+
+        private UrlItem(String grafanaFilter, Material itemMaterial, String itemName, String... lore) {
+            this.itemMaterial = itemMaterial;
+            this.itemName = itemName;
+            this.lore = Arrays.asList(lore);
+            this.url = GRAFANA_URL + grafanaFilter;
         }
     }
 

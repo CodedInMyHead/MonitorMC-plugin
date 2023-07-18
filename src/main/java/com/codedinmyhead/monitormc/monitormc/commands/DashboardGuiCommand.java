@@ -1,5 +1,6 @@
 package com.codedinmyhead.monitormc.monitormc.commands;
 
+import com.codedinmyhead.monitormc.monitormc.gui.DashboardGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,9 @@ public class DashboardGuiCommand implements CommandExecutor {
         }
 
         Player p = (Player) commandSender;
+
+        DashboardGUI gui = new DashboardGUI();
+        gui.openInventory(p);
 
 
         return true;
