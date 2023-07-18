@@ -2,11 +2,13 @@ package com.codedinmyhead.monitormc.monitormc;
 
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
+import com.codedinmyhead.monitormc.monitormc.commands.PlayerpathCommand;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -17,8 +19,12 @@ import org.dynmap.DynmapAPI;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class MonitorMC extends JavaPlugin {
@@ -33,6 +39,10 @@ public final class MonitorMC extends JavaPlugin {
     public Material targetBlockMaterial = Material.RED_WOOL;
 
     public MarkerAPI markerAPI = null;
+
+//Speicherung der playerpath-Koordinaten:
+//ArrayList für KoordinatenArrays (Arrays je mit länge von 3 -> x, y, z Koordinate)
+    public ArrayList<double[]> playerpath = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -65,6 +75,7 @@ public final class MonitorMC extends JavaPlugin {
             AreaMarker areaMarker = set.createAreaMarker("areaMarkerId1", "Hallo Micha! (👉ﾟヮﾟ)👉", true, "world", new double[] {10, 20}, new double[] {30, 40}, true);
             areaMarker.setFillStyle(1, 0xd428c3);
 
+
         } else {
             this.getLogger().warning("MarkerAPI is null!");
         }
@@ -93,6 +104,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        Bukkit.getPluginCommand("path").setExecutor(new PlayerpathCommand());
     }
 
     public void createAccuracyBow() {
@@ -100,6 +112,15 @@ public final class MonitorMC extends JavaPlugin {
         ItemMeta bowMeta = accuracyBow.getItemMeta();
         bowMeta.displayName(Component.text("Accuracy Bow"));
         accuracyBow.setItemMeta(bowMeta);
+    }
+
+    public void addCoordinatesToPlayerpath(Location pLoc){
+        double[] coords = new double[3];
+        coords[0] = pLoc.getX();
+        coords[1] = pLoc.getY();
+        coords[2] = pLoc.getZ();
+
+        playerpath.add(coords);
     }
 
 }
