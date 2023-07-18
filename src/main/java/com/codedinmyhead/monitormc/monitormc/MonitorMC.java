@@ -1,5 +1,6 @@
 package com.codedinmyhead.monitormc.monitormc;
 
+import com.codedinmyhead.monitormc.monitormc.commands.DefaultStats;
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.TopThreeCommand;
@@ -35,7 +36,6 @@ public final class MonitorMC extends JavaPlugin {
     public void onEnable() {
         registerEvents();
         registerCommands();
-
         createAccuracyBow();
 
         MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
@@ -66,6 +66,7 @@ public final class MonitorMC extends JavaPlugin {
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
         Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());
+        Bukkit.getPluginCommand("stats").setExecutor(new DefaultStats());
     }
 
     public void createAccuracyBow() {

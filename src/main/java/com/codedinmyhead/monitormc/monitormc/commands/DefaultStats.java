@@ -20,21 +20,13 @@ public class DefaultStats implements CommandExecutor {
             return false;
         }
 
-        HashMap<Integer, Material> firstPage = new HashMap<>();
-        firstPage.put(0, Material.SKELETON_SKULL);
-        firstPage.put(2, Material.DIAMOND_SWORD);
-        firstPage.put(4, Material.COAL);
-        firstPage.put(6, Material.COAL);
-        firstPage.put(8, Material.COAL);
-
         return true;
     }
 
     public void setInventory(CommandSender sender) {
         Player p = (Player) sender;
-        StatsGUI gui = new StatsGUI();
+        StatsGUI gui = new StatsGUI(p);
 
-        gui.initializeFirstPage(p);
         gui.openInventory(p);
 
 

@@ -16,20 +16,22 @@ import org.checkerframework.checker.units.qual.A;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StatsGUI implements Listener {
     private final Inventory inv;
 
-    public StatsGUI() {
+    public StatsGUI(Player p) {
         // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
-        inv = Bukkit.createInventory(null, 36, "Default Stats");
+        inv = Bukkit.createInventory(null, 9*4, "Your Statistics");
 
         // Put the items into the inventory
-//        initializeFirstPage();
+        initializeStats(p);
     }
 
     // You can call this whenever you want to put the items in
-    public void initializeFirstPage(Player p) {
+    public void initializeStats(Player p) {
         inv.setItem(0, (createGuiItem(Material.SKELETON_SKULL, "§cDeaths", p)));
         inv.setItem(2, (createGuiItem(Material.DIAMOND_SWORD, "§aKills", p)));
         inv.setItem(4, (createGuiItem(Material.COAL, "", p)));
@@ -38,12 +40,11 @@ public class StatsGUI implements Listener {
     }
 
     public void initializeMobKills(Player p) {
-        int i = 0;
-        for (EntityType mob : getMobs()) {
-            String mobName = mob.getEntityClass().getName();
-            String itemName = mobName + "_head";
-            inv.setItem(i, (createGuiItem(Material.getMaterial(itemName), "", p)));
-        }
+        AtomicInteger i = new AtomicInteger();
+        getMobKills(getMobs(), p).forEach((k,v) -> {
+            inv.setItem(i.get(), (createGuiItem(k.getName(), v)));
+            if (i.get()%9 == 0) {i.set(i.getAndIncrement());}else{i.getAndAdd(2);}
+        });
     }
 
     public ArrayList<EntityType> getMobs() {
@@ -60,7 +61,9 @@ public class StatsGUI implements Listener {
     public HashMap<EntityType, Integer> getMobKills(ArrayList<EntityType> mobs, Player p) {
         HashMap<EntityType, Integer> mobKills = new HashMap<>();
 
-
+        for (EntityType mob : mobs) {
+            mobKills.put(mob, p.getStatistic(Statistic.KILL_ENTITY, mob));
+        }
 
         return mobKills;
     }
@@ -81,22 +84,41 @@ public class StatsGUI implements Listener {
         return item;
     }
 
+    protected ItemStack createGuiItem(final String entityName, final int kills) {
+        final ItemStack item = new ItemStack(Material.COAL, 1);
+//                Objects.requireNonNull(Material.getMaterial(material)), 1
+        final ItemMeta meta = item.getItemMeta();
+
+        // Set the name of the
+        String name = String.format("§9%s Kills: %d", entityName, kills);
+        meta.setDisplayName(name);
+
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
     protected String createLore(final Material material, final Player p) {
         String lore = "";
         switch (material) {
             case DIAMOND_SWORD:
                 int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
-                lore = String.format("§9Player Kills: §b%2d%n§bClick §9to see all Mob kills", playerKills);
+                int mobKills = p.getStatistic(Statistic.MOB_KILLS);
+                lore = String.format("§9Player Kills: §b%d%n§9Mob Kills: %d (\033[3m§bClick §9to see all Mob specific kills\033[3m)", playerKills, mobKills);
                 break;
             case SKELETON_SKULL:
                 int totalDeaths = p.getStatistic(Statistic.DEATHS);
-                lore = String.format("§9Total Deaths: §b%2d", totalDeaths);
+                lore = String.format("§9Total Deaths: §b%d", totalDeaths);
                 break;
             case LEATHER_BOOTS:
                 int distanceByFoot = p.getStatistic(Statistic.WALK_ONE_CM)
                         + p.getStatistic(Statistic.CROUCH_ONE_CM)
                         + p.getStatistic(Statistic.SPRINT_ONE_CM);
-                lore = String.format("$9Distance travelled by foot: §b%2d", distanceByFoot);
+                lore = String.format("$9Distance travelled by foot: §b%d", distanceByFoot);
+                break;
+            default:
+                lore = "§cNo lore yet";
+                break;
         }
         return lore;
     }
