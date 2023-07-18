@@ -3,7 +3,6 @@ package com.codedinmyhead.monitormc.monitormc.monitoring;
 import com.sun.net.httpserver.HttpServer;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.Meter;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 
@@ -120,7 +119,34 @@ public class MetricService {
 
             ((AtomicInteger) playerSpecificMap.get(name).get(metric.getKey())).set(value);
         }
+    }
 
-
+    public double getCount(final IMonitoringMetric metric) {
+        return getCount(metric, null);
+    }
+    public double getCount(final IMonitoringMetric metric, String name) {
+        if (metric.getGlobal()) {
+            final Object object = globalMetricMap.get(metric.getKey());
+            if (object instanceof Counter) {
+                return ((Counter) object).count();
+            } else if (object instanceof AtomicInteger) {
+                return ((AtomicInteger) object).get();
+            } else {
+                return -1;
+            }
+        } else {
+            if (name == null || name.equals(EMPTY)) return -1;
+            if(playerSpecificMap.get(name) != null && playerSpecificMap.get(name).get(metric.getKey()) != null) {
+                final Object object = playerSpecificMap.get(name).get(metric.getKey());
+                if (object instanceof Counter) {
+                    return ((Counter) object).count();
+                } else if (object instanceof AtomicInteger) {
+                    return ((AtomicInteger) object).get();
+                } else {
+                    return -1;
+                }
+            }
+        }
+        return -1;
     }
 }
