@@ -75,9 +75,9 @@ public class TopThreeGUI implements Listener {
         MetricService service = MetricService.getInstance();
 
         inventory.setItem(4, createGuiItem(Material.OAK_SIGN, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
-        inventory.setItem(10, createGuiItem(Material.IRON_BLOCK, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
-        inventory.setItem(12, createGuiItem(Material.GOLD_BLOCK, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
-        inventory.setItem(14, createGuiItem(Material.COPPER_BLOCK, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
+        inventory.setItem(18, createGuiItem(Material.IRON_BLOCK, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
+        inventory.setItem(20, createGuiItem(Material.GOLD_BLOCK, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
+        inventory.setItem(22, createGuiItem(Material.COPPER_BLOCK, "§6"+e.getCurrentItem().displayName(), "§8Below you can see the top 3 players", "in this category"));
     }
 
     @EventHandler
