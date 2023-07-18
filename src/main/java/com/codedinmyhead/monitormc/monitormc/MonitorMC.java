@@ -22,9 +22,7 @@ import org.dynmap.markers.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public final class MonitorMC extends JavaPlugin {
@@ -42,7 +40,8 @@ public final class MonitorMC extends JavaPlugin {
 
 //Speicherung der playerpath-Koordinaten:
 //ArrayList für KoordinatenArrays (Arrays je mit länge von 3 -> x, y, z Koordinate)
-    public ArrayList<double[]> playerpath = new ArrayList<>();
+    public Map<UUID, ArrayList<double[]>> collectionPlayerpaths = new HashMap();
+//    public ArrayList<double[]> playerpath = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -114,13 +113,23 @@ public final class MonitorMC extends JavaPlugin {
         accuracyBow.setItemMeta(bowMeta);
     }
 
-    public void addCoordinatesToPlayerpath(Location pLoc){
+    public void addCoordinatesToPlayerpath(Location pLoc, UUID pUUID){
         double[] coords = new double[3];
+        ArrayList<double[]> pPath = null;
         coords[0] = pLoc.getX();
         coords[1] = pLoc.getY();
         coords[2] = pLoc.getZ();
 
-        playerpath.add(coords);
+
+        if (collectionPlayerpaths.containsKey(pUUID)){
+            pPath = collectionPlayerpaths.get(pUUID);
+            pPath.add(coords);
+            collectionPlayerpaths.replace(pUUID, pPath);
+        }
+        else {
+            pPath.add(coords);
+            collectionPlayerpaths.put(pUUID, pPath);
+        }
     }
 
 }
