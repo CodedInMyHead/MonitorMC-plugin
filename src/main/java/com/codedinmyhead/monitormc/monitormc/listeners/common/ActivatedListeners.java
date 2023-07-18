@@ -10,6 +10,8 @@ import org.bukkit.Material;
 @Getter
 public enum ActivatedListeners {
 
+    // All Materials that have isTopThree set to true HAVE TO BE Unique
+
     // ClassType is for initialization, other values only relevant if isTopThree is true.
     // They will then be used to show statistics in TopThree GUI.
 
