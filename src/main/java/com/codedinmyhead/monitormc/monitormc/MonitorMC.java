@@ -115,7 +115,8 @@ public final class MonitorMC extends JavaPlugin {
 
     public void addCoordinatesToPlayerpath(Location pLoc, UUID pUUID){
         double[] coords = new double[3];
-        ArrayList<double[]> pPath = null;
+        ArrayList<double[]> pPath = new ArrayList<>();
+
         coords[0] = pLoc.getX();
         coords[1] = pLoc.getY();
         coords[2] = pLoc.getZ();
