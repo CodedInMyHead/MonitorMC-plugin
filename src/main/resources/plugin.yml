@@ -13,3 +13,5 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  waypoint:
+    description: everything with waypoints

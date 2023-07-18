@@ -2,6 +2,7 @@ package com.codedinmyhead.monitormc.monitormc;
 
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
+import com.codedinmyhead.monitormc.monitormc.commands.WaypointSet;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
@@ -52,7 +53,6 @@ public final class MonitorMC extends JavaPlugin {
             }
         });
 
-
         if(markerAPI != null) {
             MarkerSet set = markerAPI.createMarkerSet("setId", "Test Set", null, false);
             MarkerIcon icon = markerAPI.getMarkerIcon("building");
@@ -93,6 +93,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        Bukkit.getPluginCommand("waypoint").setExecutor(new WaypointSet());
     }
 
     public void createAccuracyBow() {
@@ -101,5 +102,7 @@ public final class MonitorMC extends JavaPlugin {
         bowMeta.displayName(Component.text("Accuracy Bow"));
         accuracyBow.setItemMeta(bowMeta);
     }
+
+
 
 }
