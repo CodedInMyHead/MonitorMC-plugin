@@ -2,6 +2,8 @@ package com.codedinmyhead.monitormc.monitormc;
 
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
+import com.codedinmyhead.monitormc.monitormc.commands.TopThreeCommand;
+import com.codedinmyhead.monitormc.monitormc.gui.TopThreeGUI;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
@@ -27,6 +29,8 @@ public final class MonitorMC extends JavaPlugin {
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
 
+    public final static TopThreeGUI topThreeGUI = new TopThreeGUI();
+
     @Override
     public void onEnable() {
         registerEvents();
@@ -46,10 +50,11 @@ public final class MonitorMC extends JavaPlugin {
     public void registerEvents() {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
+        pluginManager.registerEvents(topThreeGUI, this);
+
+        Arrays.asList(ActivatedListeners.values()).stream().filter(e -> e.isExternal()).forEach(entry -> {
             try {
                 pluginManager.registerEvents((Listener) entry.getClassType().getDeclaredConstructor().newInstance(), this);
-
             } catch (Exception e) {}
         });
     }
@@ -58,6 +63,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());
     }
 
     public void createAccuracyBow() {
