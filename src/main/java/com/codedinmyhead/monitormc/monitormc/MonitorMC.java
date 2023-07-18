@@ -58,6 +58,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        Bukkit.getPluginCommand("dashboards").setExecutor(new AccuracyBowCommand());
     }
 
     public void createAccuracyBow() {
