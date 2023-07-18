@@ -1,5 +1,6 @@
 package com.codedinmyhead.monitormc.monitormc.gui;
 
+import com.codedinmyhead.monitormc.monitormc.MonitorMC;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -63,7 +64,6 @@ public class DashboardGUI implements Listener {
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
         if (!e.getInventory().equals(inv)) return;
-
         e.setCancelled(true);
 
         final ItemStack clickedItem = e.getCurrentItem();
@@ -90,7 +90,7 @@ public class DashboardGUI implements Listener {
     //TODO send link with a book (needs packets)
     private void openUrl(Player p, String url) {
         TextComponent t = Component.text("Click here to open the Dashboard!");
-        t.clickEvent(ClickEvent.openUrl(url));
+        t = t.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url));
         p.sendMessage(t);
     }
 

@@ -3,6 +3,7 @@ package com.codedinmyhead.monitormc.monitormc;
 import com.codedinmyhead.monitormc.monitormc.commands.DashboardGuiCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
+import com.codedinmyhead.monitormc.monitormc.gui.DashboardGUI;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
@@ -28,6 +29,8 @@ public final class MonitorMC extends JavaPlugin {
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
 
+    public final DashboardGUI dashboardGUI = new DashboardGUI();
+
     @Override
     public void onEnable() {
         registerEvents();
@@ -46,6 +49,8 @@ public final class MonitorMC extends JavaPlugin {
 
     public void registerEvents() {
         PluginManager pluginManager = Bukkit.getPluginManager();
+
+        pluginManager.registerEvents(dashboardGUI, this);
 
         Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
             try {
