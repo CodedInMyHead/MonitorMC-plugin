@@ -7,6 +7,8 @@ import org.bukkit.Material;
 @Getter
 public enum MetricsEnum implements IMonitoringMetric {
 
+    // GOLD, IRON, COPPER-Blocks, Comparator, OAK_SIGN and SUNFLOWER are not valid and will bug the leaderboard out
+
     ARROW_HIT("arrowhit", Counter.class, Tags.empty(), false, true, "Arrows hit", new String[]{"Count of Arrows hit"}, Material.ARROW),
     ARROW_MISS("arrowmiss", Counter.class, Tags.empty(), false, true, "Arrows missed",  new String[]{"Count of Arrows missed"}, Material.ARROW),
     TIMES_SLEPT("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),

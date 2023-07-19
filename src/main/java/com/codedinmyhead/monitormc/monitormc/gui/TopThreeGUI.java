@@ -20,17 +20,22 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 public class TopThreeGUI implements Listener {
     private final Inventory inventory;
-    private Mode mode = Mode.DEFAULT;
+    private Mode mode;
+    private Mode legacyMode;
+    private MetricsEnum globalMetric;
 
     private final Map<Integer, MetricsEnum> enumMapping = new HashMap<>();
 
     private int getSize() {
         int extra = ((MetricsEnum.values().length / 7) + 1) * 9;
+        if (36 + extra < 54) return 54;
         return 36 + extra;
     }
     public TopThreeGUI() {
         inventory = Bukkit.createInventory(null, getSize(), "Leaderboards");
         defaultScreen();
+        mode = Mode.DEFAULT;
+        legacyMode = Mode.BEST;
     }
 
     public void defaultScreen() {
@@ -100,7 +105,29 @@ public class TopThreeGUI implements Listener {
             return;
         }
 
-        if (clickedItem.getType() != Material.OAK_SIGN && clickedItem.getType() != Material.BARRIER && clickedItem.getType() != Material.IRON_BLOCK && clickedItem.getType() != Material.GOLD_BLOCK && clickedItem.getType() != Material.COPPER_BLOCK) {
+        if (clickedItem.getType() == Material.COMPARATOR) {
+            if (mode == Mode.BEST) {
+                mode = Mode.WORST;
+                legacyMode = Mode.WORST;
+                ItemMeta meta = clickedItem.getItemMeta();
+                meta.setDisplayName("§2Current Mode: Worst");
+                clickedItem.setItemMeta(meta);
+
+            } else {
+                mode = Mode.BEST;
+                legacyMode = Mode.BEST;
+                ItemMeta meta = clickedItem.getItemMeta();
+                meta.setDisplayName("§2Current Mode: Best");
+                clickedItem.setItemMeta(meta);
+            }
+        }
+
+        if (clickedItem.getType() == Material.SUNFLOWER) {
+            gui.inventory.clear();
+            leaderboardScreen(e, gui.inventory);
+        }
+
+        if (clickedItem.getType() != Material.OAK_SIGN && clickedItem.getType() != Material.BARRIER && clickedItem.getType() != Material.IRON_BLOCK && clickedItem.getType() != Material.GOLD_BLOCK && clickedItem.getType() != Material.COPPER_BLOCK && clickedItem.getType() != Material.COMPARATOR && clickedItem.getType() != Material.SUNFLOWER) {
             gui.inventory.clear();
             leaderboardScreen(e, gui.inventory);
         }
@@ -108,10 +135,19 @@ public class TopThreeGUI implements Listener {
     
     
     public void leaderboardScreen(final InventoryClickEvent e, final Inventory inventory) {
-        mode = Mode.BEST;
+
+        if (mode == Mode.DEFAULT) {
+            mode = legacyMode;
+        }
 
         MetricService service = MetricService.getInstance();
         MetricsEnum metric = enumMapping.get(e.getSlot());
+       if (metric == null) {
+           metric = globalMetric;
+       } else {
+           globalMetric = metric;
+       }
+
         Map<String, Integer> playerScores = service.getPlayerSpecificMetric(metric);
 
         List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(playerScores.entrySet());
@@ -128,8 +164,6 @@ public class TopThreeGUI implements Listener {
 
         int[] placesScores = new int[3];
         String[] placesNames = new String[3];
-
-        sortedEntries.forEach(System.out::println);
 
         if (mode == Mode.BEST) {
             if (sortedEntries.size() > 0) {
@@ -175,15 +209,19 @@ public class TopThreeGUI implements Listener {
 
 
         final String title = mode == Mode.BEST ? "top" : "bottom";
+        final String sortMode = mode == Mode.BEST ? "Best" : "Worst";
+
         final String scoreColor1 = placesScores[0] == 0 ? "§c" : "§2";
         final String scoreColor2 = placesScores[1] == 0 ? "§c" : "§2";
         final String scoreColor3 = placesScores[2] == 0 ? "§c" : "§2";
 
-        inventory.setItem(4, createGuiItem(Material.OAK_SIGN, "§6"+"Leaderboards", "§8Below you can see the", "§8" + title + " 3 players in the category", "§8"+ metric.getName()));
+        inventory.setItem(13, createGuiItem(Material.OAK_SIGN, "§6"+"Leaderboards", "§8Below you can see the", "§8" + title + " 3 players in the category", "§8"+ metric.getName()));
+        inventory.setItem(getSize() - 1, createGuiItem(Material.COMPARATOR, "§2Current Mode: " + sortMode, "§8Click me to switch!"));
+        inventory.setItem(getSize() - 5, createGuiItem(Material.SUNFLOWER, "§2Reload:", "§8Click me to reload current stats!"));
 
-        inventory.setItem(20, createGuiItem(Material.IRON_BLOCK, "§a"+placesNames[1], "§72nd Place", "§8Score: " + scoreColor2 + placesScores[1]));
-        inventory.setItem(22, createGuiItem(Material.GOLD_BLOCK, "§a"+placesNames[0], "§61st Place", "§8Score: " + scoreColor1 + placesScores[0]));
-        inventory.setItem(24, createGuiItem(Material.COPPER_BLOCK, "§a"+placesNames[2], "§83rd Place", "§8Score: " + scoreColor3 + placesScores[2]));
+        inventory.setItem(29, createGuiItem(Material.IRON_BLOCK, "§a"+placesNames[1], "§72nd Place", "§8Score: " + scoreColor2 + placesScores[1]));
+        inventory.setItem(31, createGuiItem(Material.GOLD_BLOCK, "§a"+placesNames[0], "§61st Place", "§8Score: " + scoreColor1 + placesScores[0]));
+        inventory.setItem(33, createGuiItem(Material.COPPER_BLOCK, "§a"+placesNames[2], "§83rd Place", "§8Score: " + scoreColor3 + placesScores[2]));
 
         inventory.setItem(getSize() - 9, createGuiItem(Material.BARRIER, "§cBack", "§8Click here to close", "§8this inventory."));
     }
