@@ -1,11 +1,16 @@
 package com.codedinmyhead.monitormc.monitormc.commands;
 
 import com.codedinmyhead.monitormc.monitormc.gui.StatsGUI;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 public class DefaultStatsCommand implements CommandExecutor {
     @Override
@@ -24,6 +29,5 @@ public class DefaultStatsCommand implements CommandExecutor {
         StatsGUI.statsMap.put(((Player) sender).getUniqueId(), gui);
         gui.setP((Player) sender);
         gui.openInventory(p);
-
     }
 }

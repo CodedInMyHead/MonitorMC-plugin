@@ -93,6 +93,7 @@ public class StatsGUI implements Listener {
 //                Objects.requireNonNull(Material.getMaterial(material)), 1
 
         final ItemMeta meta = item.getItemMeta();
+
         // Set the name of the
         String name = String.format("§9%s Kills: %d", entity.getName(), kills);
         meta.setDisplayName(name);
