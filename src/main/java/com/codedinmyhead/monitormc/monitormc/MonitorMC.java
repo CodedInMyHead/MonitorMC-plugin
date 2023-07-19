@@ -10,13 +10,19 @@ import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 public final class MonitorMC extends JavaPlugin {
 
@@ -29,17 +35,21 @@ public final class MonitorMC extends JavaPlugin {
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
 
-    public final DashboardGUI dashboardGUI = new DashboardGUI();
+    public DashboardGUI dashboardGUI;
+    private File customDashboardConfigFile;
+    private FileConfiguration customDashboardConfig;
 
     @Override
     public void onEnable() {
-        registerEvents();
-        registerCommands();
-
         createAccuracyBow();
+
+        createCustomDashboardConfigFile();
+        this.dashboardGUI = new DashboardGUI();
 
         MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
 
+        registerEvents();
+        registerCommands();
     }
 
     @Override
@@ -74,4 +84,23 @@ public final class MonitorMC extends JavaPlugin {
         accuracyBow.setItemMeta(bowMeta);
     }
 
+
+    private void createCustomDashboardConfigFile() {
+        customDashboardConfigFile = new File(getDataFolder(), "customDashboards.yml");
+        if (!customDashboardConfigFile.exists()) {
+            customDashboardConfigFile.getParentFile().mkdirs();
+            saveResource("customDashboards.yml", false);
+        }
+
+        customDashboardConfig = new YamlConfiguration();
+        try {
+            customDashboardConfig.load(customDashboardConfigFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public FileConfiguration getCustomDashboardConfig() {
+        return this.customDashboardConfig;
+    }
 }

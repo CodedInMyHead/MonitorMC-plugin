@@ -1,5 +1,6 @@
 package com.codedinmyhead.monitormc.monitormc.gui;
 
+import com.codedinmyhead.monitormc.monitormc.MonitorMC;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -7,6 +8,10 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,24 +26,46 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 
 public class DashboardGUI implements Listener {
 
     private final Inventory inv;
 
-    //TODO: Change lol
-    private final String GRAFANA_URL = "https://localhost:3000";
+    private String GRAFANA_URL;
     private HashMap<Integer, UrlItem> urlMap = new HashMap<>();
 
     public DashboardGUI() {
         inv = Bukkit.createInventory(null, 9*4, "Dashboards");
-
         initializeItemsAndUrlMap();
     }
 
     public void initializeItemsAndUrlMap() {
-        urlMap.put(0, new UrlItem("deaths/all", Material.CREEPER_HEAD, "Deaths", "lore1", "lore2"));
-        urlMap.put(2, new UrlItem("dashboard/new?orgId=1&editPanel=1", Material.ZOMBIE_HEAD, "Test Dashboard"));
+        if(MonitorMC.INSTANCE == null)
+            return;
+        System.out.println("TEST TEST TEST TEST");
+
+        String customUrl = MonitorMC.INSTANCE.getCustomDashboardConfig().getString("grafana-url");
+        this.GRAFANA_URL = (customUrl == null) ? "https://localhost:3000" : customUrl;
+        System.out.println("URL: " + this.GRAFANA_URL);
+        FileConfiguration configFile = MonitorMC.INSTANCE.getCustomDashboardConfig();
+//        List<String> dashboards = configFile.getStringList("dashboards");
+        ConfigurationSection dashboards = configFile.getConfigurationSection("dashboards");
+        for(String s : dashboards.getKeys(false)) {
+            String grafanaFilter = dashboards.getString(s+".grafana-filter");
+            MonitorMC.INSTANCE.getLogger().log(Level.INFO, grafanaFilter);
+        }
+//        for(int i = 0; i < dashboards.getKeys(false).size(); i++) {
+//            String grafanaFilter = dashboards.get(dashboards.getKeys(false).ge)
+//            String materialString = configFile.getString(dashboards.get(i)+"."+"material");
+//            System.out.println("MATERIAL: " +materialString);
+//            List<String> lore = configFile.getStringList(dashboards.get(i)+"."+"lore");
+//            urlMap.put(i, new UrlItem(grafanaFilter, Material.matchMaterial(materialString), dashboards.get(i), lore.toArray(new String[0])));
+//        }
+
+//        urlMap.put(0, new UrlItem("deaths/all", Material.CREEPER_HEAD, "Deaths", "lore1", "lore2"));
+//        urlMap.put(2, new UrlItem("dashboard/new?orgId=1&editPanel=1", Material.ZOMBIE_HEAD, "Test Dashboard"));
 
         urlMap.entrySet().forEach(e -> {
             UrlItem ui = e.getValue();

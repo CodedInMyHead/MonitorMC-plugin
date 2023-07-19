@@ -1,0 +1,8 @@
+grafana-url: https://www.google.de
+dashboards:
+  test:
+    grafana-filter: test123
+    material: diamond_block
+    lore:
+      hallo
+      lol
