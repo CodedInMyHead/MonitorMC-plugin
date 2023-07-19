@@ -23,49 +23,44 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class DashboardGUI implements Listener {
 
     private final Inventory inv;
-
+    private final int invSize = 36;
     private String GRAFANA_URL;
     private HashMap<Integer, UrlItem> urlMap = new HashMap<>();
 
     public DashboardGUI() {
-        inv = Bukkit.createInventory(null, 9*4, "Dashboards");
+        inv = Bukkit.createInventory(null, this.invSize, "Dashboards");
         initializeItemsAndUrlMap();
     }
 
     public void initializeItemsAndUrlMap() {
         if(MonitorMC.INSTANCE == null)
             return;
-        System.out.println("TEST TEST TEST TEST");
 
         String customUrl = MonitorMC.INSTANCE.getCustomDashboardConfig().getString("grafana-url");
         this.GRAFANA_URL = (customUrl == null) ? "https://localhost:3000" : customUrl;
-        System.out.println("URL: " + this.GRAFANA_URL);
         FileConfiguration configFile = MonitorMC.INSTANCE.getCustomDashboardConfig();
-//        List<String> dashboards = configFile.getStringList("dashboards");
         ConfigurationSection dashboards = configFile.getConfigurationSection("dashboards");
+        int slot = 0;
         for(String s : dashboards.getKeys(false)) {
-            String grafanaFilter = dashboards.getString(s+".grafana-filter");
-            MonitorMC.INSTANCE.getLogger().log(Level.INFO, grafanaFilter);
+            if(slot > this.invSize)
+                break;
+            String grafanaFilter = dashboards.getString(s+".grafana-filter") == null ? "" : dashboards.getString(s+".grafana-filter");
+            String materialString = dashboards.getString(s+".material") == null ? "null" : dashboards.getString(s+".material");
+//            ConfigurationSection loreSection = dashboards.getConfigurationSection(s+".lore");
+//            Set<String> lore = new HashSet<>();
+//            if(loreSection != null)
+//                lore = loreSection.getKeys(false);
+//            lore.forEach(System.out::println);
+            List<String> lore = dashboards.getStringList(s+".lore");
+            urlMap.put(slot, new UrlItem(grafanaFilter, Material.matchMaterial(materialString), s, lore.toArray(new String[0])));
+            slot += 2;
         }
-//        for(int i = 0; i < dashboards.getKeys(false).size(); i++) {
-//            String grafanaFilter = dashboards.get(dashboards.getKeys(false).ge)
-//            String materialString = configFile.getString(dashboards.get(i)+"."+"material");
-//            System.out.println("MATERIAL: " +materialString);
-//            List<String> lore = configFile.getStringList(dashboards.get(i)+"."+"lore");
-//            urlMap.put(i, new UrlItem(grafanaFilter, Material.matchMaterial(materialString), dashboards.get(i), lore.toArray(new String[0])));
-//        }
-
-//        urlMap.put(0, new UrlItem("deaths/all", Material.CREEPER_HEAD, "Deaths", "lore1", "lore2"));
-//        urlMap.put(2, new UrlItem("dashboard/new?orgId=1&editPanel=1", Material.ZOMBIE_HEAD, "Test Dashboard"));
 
         urlMap.entrySet().forEach(e -> {
             UrlItem ui = e.getValue();

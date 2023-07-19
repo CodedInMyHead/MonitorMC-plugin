@@ -4,5 +4,11 @@ dashboards:
     grafana-filter: test123
     material: diamond_block
     lore:
-      hallo
-      lol
+      - hallo
+      - lol
+  deaths:
+    grafana-filter: deaths/all
+    material: skeleton_skull
+    lore:
+      - Shows the deaths of all Players
+      - Bottom Text

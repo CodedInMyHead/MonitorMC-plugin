@@ -89,7 +89,7 @@ public final class MonitorMC extends JavaPlugin {
         customDashboardConfigFile = new File(getDataFolder(), "customDashboards.yml");
         if (!customDashboardConfigFile.exists()) {
             customDashboardConfigFile.getParentFile().mkdirs();
-            saveResource("customDashboards.yml", false);
+            saveResource("customDashboards.yml", true);
         }
 
         customDashboardConfig = new YamlConfiguration();
