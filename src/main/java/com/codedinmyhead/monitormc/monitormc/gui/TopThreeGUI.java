@@ -25,7 +25,7 @@ public class TopThreeGUI implements Listener {
     private final Map<Integer, MetricsEnum> enumMapping = new HashMap<>();
 
     private int getSize() {
-        int extra = ((MetricsEnum.values().length / 9) + 1) * 9;
+        int extra = ((MetricsEnum.values().length / 7) + 1) * 9;
         return 36 + extra;
     }
     public TopThreeGUI() {
@@ -46,6 +46,11 @@ public class TopThreeGUI implements Listener {
         inventory.setItem(getSize() - 9, createGuiItem(Material.BARRIER, "§cBack", "§8Click here to close", "§8this inventory."));
 
         Arrays.stream(MetricsEnum.values()).filter(MetricsEnum::isLeaderboard).forEach(enumEntry -> {
+            if (position.get() % 9 == 8) {
+                position.set(position.get() + 2);
+            } else if (position.get() % 9 == 0) {
+                position.set(position.get() + 1);
+            }
             inventory.setItem(position.get(), createGuiItem(enumEntry.getMaterial(), "§6" + enumEntry.getName() ,
                     Arrays.stream(enumEntry.getLore())
                     .map(element -> "§7" + element)
