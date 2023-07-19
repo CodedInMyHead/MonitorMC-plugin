@@ -54,15 +54,16 @@ public final class MonitorMC extends JavaPlugin {
         // and only event register functionality is required
         pluginManager.registerEvents(topThreeGUI, this);
 
-        Arrays.asList(ActivatedListeners.values()).stream().filter(e -> e.isExternal()).forEach(entry -> {
+        Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
             try {
                 pluginManager.registerEvents((Listener) entry.getClassType().getDeclaredConstructor().newInstance(), this);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                getLogger().warning("ActiveListener entry " + entry + " threw an exception in initialization!");
+            }
         });
     }
 
     public void registerCommands() {
-
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
         Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());

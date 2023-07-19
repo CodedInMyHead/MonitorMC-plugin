@@ -120,10 +120,6 @@ public class MetricService {
             ((AtomicInteger) playerSpecificMap.get(name).get(metric.getKey())).set(value);
         }
     }
-
-    public double getCount(final IMonitoringMetric metric) {
-        return getCount(metric, null);
-    }
     public double getCount(final IMonitoringMetric metric, String name) {
         if (metric.getGlobal()) {
             final Object object = globalMetricMap.get(metric.getKey());
@@ -148,5 +144,21 @@ public class MetricService {
             }
         }
         return -1;
+    }
+
+    public Map<String, Integer> getPlayerSpecificMetric(final IMonitoringMetric metric) {
+        Map<String, Integer> map = new HashMap<>();
+        playerSpecificMap.forEach((name,metricToObj) -> {
+            int val = -1;
+            if (metricToObj.get(metric.getKey()) != null) {
+                if (metricToObj.get(metric.getKey()) instanceof Counter) {
+                    val = (int) ((Counter) metricToObj.get(metric.getKey())).count();
+                } else if (metricToObj.get(metric.getKey()) instanceof AtomicInteger) {
+                    val = ((AtomicInteger) metricToObj.get(metric.getKey())).get();
+                }
+                map.put(name, val);
+            }
+        });
+        return map;
     }
 }

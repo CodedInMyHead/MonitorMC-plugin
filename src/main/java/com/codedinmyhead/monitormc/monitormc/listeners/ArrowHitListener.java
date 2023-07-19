@@ -4,7 +4,6 @@ import com.codedinmyhead.monitormc.monitormc.MonitorMC;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import org.bukkit.Instrument;
-import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -20,19 +19,17 @@ public class ArrowHitListener implements Listener {
 
     @EventHandler
     public void onArrowHit(ProjectileHitEvent event) {
-        if(event.getEntity() instanceof Arrow ) {
-            Arrow a = (Arrow) event.getEntity();
+        if(event.getEntity() instanceof Arrow a) {
             Block hitBlock = event.getHitBlock();
 
-            if(a.getShooter() instanceof Player) {
-                Player p = (Player) a.getShooter();
+            if(a.getShooter() instanceof Player p) {
                 if(countShotAsTry(p)) {
-                    if(hitBlock.getType().equals(MonitorMC.INSTANCE.targetBlockMaterial)) {
-                        metricService.incrementCounter(MetricsEnum.ARROW_HIT);
+                    if(hitBlock != null && hitBlock.getType().equals(MonitorMC.INSTANCE.targetBlockMaterial)) {
+                        metricService.incrementCounter(MetricsEnum.ARROW_HIT, p.getName());
                         p.sendMessage("You hit a target!");
                         p.playNote(p.getLocation(), Instrument.BELL, Note.natural(1, Note.Tone.E));
                     } else {
-                        metricService.incrementCounter(MetricsEnum.ARROW_MISS);
+                        metricService.incrementCounter(MetricsEnum.ARROW_MISS, p.getName());
                         p.sendMessage("You missed a target!");
                     }
                 }
