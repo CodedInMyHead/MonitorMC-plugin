@@ -26,7 +26,6 @@ public class DefaultStatsCommand implements CommandExecutor {
     public void setInventory(CommandSender sender) {
         Player p = (Player) sender;
         StatsGUI gui = new StatsGUI(p);
-//        gui.setP((Player) sender);
         StatsGUI.statsMap.put(((Player) sender).getUniqueId(), gui);
         gui.openInventory(p);
     }

@@ -20,12 +20,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StatsGUI implements Listener {
     private final Inventory inv;
 
-    //    private Player p;
-
-//    public void setP(Player p) {
-//        this.p = p;
-//    }
-
     public static final Map<UUID, StatsGUI> statsMap = new HashMap<>();
 
     public StatsGUI(Player p) {
@@ -50,25 +44,47 @@ public class StatsGUI implements Listener {
     public void initializeMobKills(Player p, Inventory i) {
         AtomicInteger n = new AtomicInteger();
         n.set(0);
-        getMobKills(getMobs(), p).forEach((k,v) -> {
+        getMobKills(mobs(), p).forEach((k,v) -> {
             i.setItem(n.get(), (createGuiItem(k, v)));
             if (n.get()%9 == 0) {n.set(n.getAndIncrement());}else{n.getAndAdd(2);}
         });
     }
 
-    public List<EntityType> getMobs() {
-        List<EntityType> mobs = mobs();
-        for(EntityType entity : mobs) {
-            assert entity.getEntityClass() != null;
-            if(entity.getEntityClass().isAssignableFrom(Monster.class)) {
-                mobs.add(entity);
-            }
-        }
-        return mobs;
-    }
-
     public List<EntityType> mobs() {
         List<EntityType> mobs = new ArrayList<>();
+
+        mobs.add(EntityType.BLAZE);
+        mobs.add(EntityType.CREEPER);
+        mobs.add(EntityType.DROWNED);
+        mobs.add(EntityType.ENDERMAN);
+        mobs.add(EntityType.ENDER_DRAGON);
+        mobs.add(EntityType.ELDER_GUARDIAN);
+        mobs.add(EntityType.EVOKER);
+        mobs.add(EntityType.GHAST);
+        mobs.add(EntityType.GUARDIAN);
+        mobs.add(EntityType.HOGLIN);
+        mobs.add(EntityType.HUSK);
+        mobs.add(EntityType.MAGMA_CUBE);
+        mobs.add(EntityType.PHANTOM);
+        mobs.add(EntityType.PIGLIN);
+        mobs.add(EntityType.PIGLIN_BRUTE);
+        mobs.add(EntityType.PILLAGER);
+        mobs.add(EntityType.RAVAGER);
+        mobs.add(EntityType.SHULKER);
+        mobs.add(EntityType.SILVERFISH);
+        mobs.add(EntityType.SKELETON);
+        mobs.add(EntityType.SLIME);
+        mobs.add(EntityType.STRAY);
+        mobs.add(EntityType.VEX);
+        mobs.add(EntityType.VINDICATOR);
+        mobs.add(EntityType.WARDEN);
+        mobs.add(EntityType.WITCH);
+        mobs.add(EntityType.WITHER);
+        mobs.add(EntityType.WITHER_SKELETON);
+        mobs.add(EntityType.ZOGLIN);
+        mobs.add(EntityType.ZOMBIE);
+        mobs.add(EntityType.ZOMBIFIED_PIGLIN);
+        mobs.add(EntityType.ZOMBIE_VILLAGER);
 
         return mobs;
     }
