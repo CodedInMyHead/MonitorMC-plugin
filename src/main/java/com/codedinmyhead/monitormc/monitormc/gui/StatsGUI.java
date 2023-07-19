@@ -2,9 +2,7 @@ package com.codedinmyhead.monitormc.monitormc.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
-import org.bukkit.block.Skull;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,8 +12,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,7 +46,7 @@ public class StatsGUI implements Listener {
     public void initializeMobKills(Player p) {
         AtomicInteger i = new AtomicInteger();
         getMobKills(getMobs(), p).forEach((k,v) -> {
-            inv.setItem(i.get(), (createGuiItem(k.getName(), v)));
+            inv.setItem(i.get(), (createGuiItem(k, v)));
             if (i.get()%9 == 0) {i.set(i.getAndIncrement());}else{i.getAndAdd(2);}
         });
     }
@@ -85,26 +81,20 @@ public class StatsGUI implements Listener {
         meta.setDisplayName(name);
 
         // Set the lore of the item
-        meta.setLore(Arrays.asList(createLore(material, p)));
+        meta.setLore(createLore(material, p));
 
         item.setItemMeta(meta);
 
         return item;
     }
 
-    protected ItemStack createGuiItem(final String entityName, final int kills) {
-        String material = "";
-
-        final ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1);
+    protected ItemStack createGuiItem(final EntityType entity, final int kills) {
+        final ItemStack item = new ItemStack(mobHeads().get(entity), 1);
 //                Objects.requireNonNull(Material.getMaterial(material)), 1
 
         final ItemMeta meta = item.getItemMeta();
-
-        final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-        skullMeta.setOwner("Rypex");
-
         // Set the name of the
-        String name = String.format("§9%s Kills: %d", entityName, kills);
+        String name = String.format("§9%s Kills: %d", entity.getName(), kills);
         meta.setDisplayName(name);
 
         item.setItemMeta(meta);
@@ -112,41 +102,65 @@ public class StatsGUI implements Listener {
         return item;
     }
 
-    public Map<UUID, EntityType> playerHeads(List<EntityType> mobs) {
-        Map<UUID, EntityType> heads = new HashMap<>();
+    public Map<EntityType, Material> mobHeads() {
+        Map<EntityType, Material> heads = new HashMap<>();
 
-
+        heads.put(EntityType.BLAZE, Material.BLAZE_ROD);
+        heads.put(EntityType.CREEPER, Material.CREEPER_HEAD);
+        heads.put(EntityType.DROWNED, Material.NAUTILUS_SHELL);
+        heads.put(EntityType.ENDERMAN, Material.ENDER_PEARL);
+        heads.put(EntityType.ENDER_DRAGON, Material.DRAGON_HEAD);
+        heads.put(EntityType.ELDER_GUARDIAN, Material.SPONGE);
+        heads.put(EntityType.EVOKER, Material.TOTEM_OF_UNDYING);
+        heads.put(EntityType.GHAST, Material.GHAST_TEAR);
+        heads.put(EntityType.GUARDIAN, Material.PRISMARINE_SHARD);
+        heads.put(EntityType.HOGLIN, Material.WARPED_FUNGUS);
+        heads.put(EntityType.HUSK, Material.DEAD_BUSH);
+        heads.put(EntityType.MAGMA_CUBE, Material.MAGMA_CREAM);
+        heads.put(EntityType.PHANTOM, Material.PHANTOM_MEMBRANE);
+        heads.put(EntityType.PIGLIN, Material.PIGLIN_HEAD);
+        heads.put(EntityType.PIGLIN_BRUTE, Material.GOLDEN_AXE);
+        heads.put(EntityType.PILLAGER, Material.CROSSBOW);
+        heads.put(EntityType.RAVAGER, Material.SADDLE);
+        heads.put(EntityType.SHULKER, Material.SHULKER_BOX);
+        heads.put(EntityType.SILVERFISH, Material.INFESTED_CRACKED_STONE_BRICKS);
+        heads.put(EntityType.SKELETON, Material.SKELETON_SKULL);
+        heads.put(EntityType.SLIME, Material.SLIME_BALL);
+        heads.put(EntityType.STRAY, Material.TIPPED_ARROW);
+        heads.put(EntityType.VEX, Material.IRON_SWORD);
+        heads.put(EntityType.VINDICATOR, Material.EMERALD);
+        heads.put(EntityType.WARDEN, Material.SCULK_CATALYST);
+        heads.put(EntityType.WITCH, Material.SPLASH_POTION);
+        heads.put(EntityType.WITHER, Material.NETHER_STAR);
+        heads.put(EntityType.WITHER_SKELETON, Material.WITHER_SKELETON_SKULL);
+        heads.put(EntityType.ZOGLIN, Material.PORKCHOP);
+        heads.put(EntityType.ZOMBIE, Material.ZOMBIE_HEAD);
+        heads.put(EntityType.ZOMBIFIED_PIGLIN, Material.GOLD_NUGGET);
+        heads.put(EntityType.ZOMBIE_VILLAGER, Material.ROTTEN_FLESH);
 
         return heads;
     }
 
-    public OfflinePlayer getPlayerHead(Map<UUID, EntityType> playerHeads) {
-        OfflinePlayer player = (OfflinePlayer) p;
-
-        return player;
-    }
-
-    protected String createLore(final Material material, final Player p) {
-        String lore = "";
+    protected List<String> createLore(final Material material, final Player p) {
+        List<String> lore = new ArrayList<>();
         switch (material) {
-            case DIAMOND_SWORD:
+            case DIAMOND_SWORD -> {
                 int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
                 int mobKills = p.getStatistic(Statistic.MOB_KILLS);
-                lore = String.format("§9Player Kills: §b%d%n§9Mob Kills: %d (\033[3m§bClick §9to see all Mob specific kills\033[3m)", playerKills, mobKills);
-                break;
-            case SKELETON_SKULL:
+                lore.add(String.format("§9Player Kills: §b%d", playerKills));
+                lore.add(String.format("§9Mob Kills: %d (\033[3m§bClick §9to see all Mob specific kills\033[3m)", mobKills));
+            }
+            case SKELETON_SKULL -> {
                 int totalDeaths = p.getStatistic(Statistic.DEATHS);
-                lore = String.format("§9Total Deaths: §b%d", totalDeaths);
-                break;
-            case LEATHER_BOOTS:
+                lore.add(String.format("§9Total Deaths: §b%d", totalDeaths));
+            }
+            case LEATHER_BOOTS -> {
                 int distanceByFoot = p.getStatistic(Statistic.WALK_ONE_CM)
                         + p.getStatistic(Statistic.CROUCH_ONE_CM)
                         + p.getStatistic(Statistic.SPRINT_ONE_CM);
-                lore = String.format("$9Distance travelled by foot: §b%d", distanceByFoot);
-                break;
-            default:
-                lore = "§cNo lore yet";
-                break;
+                lore.add(String.format("$9Distance travelled by foot: §b%d", distanceByFoot));
+            }
+            default -> lore.add("§cNo lore yet");
         }
         return lore;
     }
@@ -168,14 +182,14 @@ public class StatsGUI implements Listener {
         // verify current item is not null
         if (clickedItem == null || clickedItem.getType().isAir()) return;
 
-        final Player p = (Player) e.getWhoClicked();
+        final Player player = (Player) e.getWhoClicked();
 
         // Using slots click is the best option for your inventory click's
         p.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
             inv.clear();
-            initializeMobKills(p);
+            initializeMobKills(player);
         }
     }
 
@@ -196,7 +210,7 @@ public class StatsGUI implements Listener {
         statsMap.remove(e.getPlayer().getUniqueId());
     }
 
-    public ItemStack getClicketItem(InventoryClickEvent e) {
+    public ItemStack getClickedItem(InventoryClickEvent e) {
         return e.getCurrentItem();
     }
 }
