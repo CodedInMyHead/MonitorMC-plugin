@@ -1,9 +1,10 @@
 package com.codedinmyhead.monitormc.monitormc.gui;
 
-import com.codedinmyhead.monitormc.monitormc.MonitorMC;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -14,9 +15,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class DashboardGUI implements Listener {
     private final Inventory inv;
 
     //TODO: Change lol
-    private final String GRAFANA_URL = "localhost:3000";
+    private final String GRAFANA_URL = "https://localhost:3000";
     private HashMap<Integer, UrlItem> urlMap = new HashMap<>();
 
     public DashboardGUI() {
@@ -74,8 +75,8 @@ public class DashboardGUI implements Listener {
 
         int slot = e.getRawSlot();
         if(urlMap.containsKey(slot)) {
-            openUrl(p, urlMap.get(slot).url);
             p.closeInventory();
+            openUrl(p, urlMap.get(slot).url);
         }
 
     }
@@ -87,11 +88,28 @@ public class DashboardGUI implements Listener {
         }
     }
 
-    //TODO send link with a book (needs packets)
     private void openUrl(Player p, String url) {
-        TextComponent t = Component.text("Click here to open the Dashboard!");
-        t = t.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url));
-        p.sendMessage(t);
+        TextComponent linkComponent =
+                Component.text("Click Me!")
+                        .color(TextColor.color(19, 255, 53))
+                        .clickEvent(ClickEvent.openUrl(url))
+                        .hoverEvent(HoverEvent.showText(Component.text(url)));
+
+        TextComponent bookPage =
+                (TextComponent) Component.text("Click on the text below to open the dashboard:")
+                        .color(TextColor.color(1,1,1))
+                        .appendNewline()
+                        .appendNewline()
+                        .append(linkComponent);
+
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        bookMeta.addPages(bookPage);
+        bookMeta.setAuthor("MonitorMC");
+        bookMeta.setTitle("Dashboard Link");
+        book.setItemMeta(bookMeta);
+        p.openBook(book);
+
     }
 
     private class UrlItem {
@@ -104,7 +122,7 @@ public class DashboardGUI implements Listener {
             this.itemMaterial = itemMaterial;
             this.itemName = itemName;
             this.lore = Arrays.asList(lore);
-            this.url = GRAFANA_URL + grafanaFilter;
+            this.url = GRAFANA_URL + "/" + grafanaFilter;
         }
     }
 
