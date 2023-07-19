@@ -12,6 +12,7 @@ import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -33,7 +34,7 @@ public final class MonitorMC extends JavaPlugin {
 
     public final static TopThreeGUI topThreeGUI = new TopThreeGUI();
 
-    public StatsGUI statsGui = new StatsGUI();
+    public StatsGUI statsGui = new StatsGUI(null);
 
     @Override
     public void onEnable() {

@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,19 +20,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StatsGUI implements Listener {
     private final Inventory inv;
 
-    private Player p;
+    //    private Player p;
 
-    public void setP(Player p) {
-        this.p = p;
-    }
+//    public void setP(Player p) {
+//        this.p = p;
+//    }
 
     public static final Map<UUID, StatsGUI> statsMap = new HashMap<>();
 
-    public StatsGUI() {
+    public StatsGUI(Player p) {
         // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
         inv = Bukkit.createInventory(null, 9*4, "Your Statistics");
         // Put the items into the inventory
-        initializeFirstPage(p);
+
+        if (p != null) {
+            initializeFirstPage(p);
+        }
     }
 
     // You can call this whenever you want to put the items in
@@ -43,22 +47,29 @@ public class StatsGUI implements Listener {
         inv.setItem(8, (createGuiItem(Material.COAL, "", p)));
     }
 
-    public void initializeMobKills(Player p) {
-        AtomicInteger i = new AtomicInteger();
+    public void initializeMobKills(Player p, Inventory i) {
+        AtomicInteger n = new AtomicInteger();
+        n.set(0);
         getMobKills(getMobs(), p).forEach((k,v) -> {
-            inv.setItem(i.get(), (createGuiItem(k, v)));
-            if (i.get()%9 == 0) {i.set(i.getAndIncrement());}else{i.getAndAdd(2);}
+            i.setItem(n.get(), (createGuiItem(k, v)));
+            if (n.get()%9 == 0) {n.set(n.getAndIncrement());}else{n.getAndAdd(2);}
         });
     }
 
     public List<EntityType> getMobs() {
-        ArrayList<EntityType> mobs = new ArrayList<>();
-        for(EntityType entity : EntityType.values()) {
+        List<EntityType> mobs = mobs();
+        for(EntityType entity : mobs) {
             assert entity.getEntityClass() != null;
             if(entity.getEntityClass().isAssignableFrom(Monster.class)) {
                 mobs.add(entity);
             }
         }
+        return mobs;
+    }
+
+    public List<EntityType> mobs() {
+        List<EntityType> mobs = new ArrayList<>();
+
         return mobs;
     }
 
@@ -149,7 +160,7 @@ public class StatsGUI implements Listener {
                 int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
                 int mobKills = p.getStatistic(Statistic.MOB_KILLS);
                 lore.add(String.format("§9Player Kills: §b%d", playerKills));
-                lore.add(String.format("§9Mob Kills: %d (\033[3m§bClick §9to see all Mob specific kills\033[3m)", mobKills));
+                lore.add(String.format("§9Mob Kills: %d (§bClick §9to see all Mob specific kills)", mobKills));
             }
             case SKELETON_SKULL -> {
                 int totalDeaths = p.getStatistic(Statistic.DEATHS);
@@ -169,12 +180,13 @@ public class StatsGUI implements Listener {
     // You can open the inventory with this
     public void openInventory(final HumanEntity ent) {
         ent.openInventory(inv);
+        Player p = (Player) ent;
     }
 
     // Check for clicks on items
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
-        if (!e.getInventory().equals(inv)) return;
+        if (!e.getInventory().equals(statsMap.get(e.getWhoClicked().getUniqueId()).inv)) return;
 
         e.setCancelled(true);
 
@@ -186,18 +198,18 @@ public class StatsGUI implements Listener {
         final Player player = (Player) e.getWhoClicked();
 
         // Using slots click is the best option for your inventory click's
-        p.sendMessage("You clicked at slot " + e.getRawSlot());
+        player.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
-            inv.clear();
-            initializeMobKills(player);
+            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
+            initializeMobKills(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
         }
     }
 
     // Cancel dragging in our inventory
     @EventHandler
     public void onInventoryClick(final InventoryDragEvent e) {
-        if (e.getInventory().equals(inv)) {
+        if (e.getInventory().equals(statsMap.get(e.getWhoClicked().getUniqueId()).inv)) {
             e.setCancelled(true);
         }
     }
