@@ -45,18 +45,13 @@ public class DashboardGUI implements Listener {
         String customUrl = MonitorMC.INSTANCE.getCustomDashboardConfig().getString("grafana-url");
         this.GRAFANA_URL = (customUrl == null) ? "https://localhost:3000" : customUrl;
         FileConfiguration configFile = MonitorMC.INSTANCE.getCustomDashboardConfig();
-        ConfigurationSection dashboards = configFile.getConfigurationSection("dashboards");
+        ConfigurationSection dashboards = configFile.getConfigurationSection("dashboarsds");
         int slot = 0;
         for(String s : dashboards.getKeys(false)) {
             if(slot > this.invSize)
                 break;
             String grafanaFilter = dashboards.getString(s+".grafana-filter") == null ? "" : dashboards.getString(s+".grafana-filter");
-            String materialString = dashboards.getString(s+".material") == null ? "null" : dashboards.getString(s+".material");
-//            ConfigurationSection loreSection = dashboards.getConfigurationSection(s+".lore");
-//            Set<String> lore = new HashSet<>();
-//            if(loreSection != null)
-//                lore = loreSection.getKeys(false);
-//            lore.forEach(System.out::println);
+            String materialString = dashboards.getString(s+".material") == null ? "item_frame" : dashboards.getString(s+".material");
             List<String> lore = dashboards.getStringList(s+".lore");
             urlMap.put(slot, new UrlItem(grafanaFilter, Material.matchMaterial(materialString), s, lore.toArray(new String[0])));
             slot += 2;
