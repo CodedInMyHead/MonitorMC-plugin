@@ -16,3 +16,5 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  stats:
+    description: brauchen wir nicht
