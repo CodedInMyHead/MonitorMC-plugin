@@ -9,7 +9,16 @@ public enum MetricsEnum implements IMonitoringMetric {
 
     ARROW_HIT("arrowhit", Counter.class, Tags.empty(), false, true, "Arrows hit", new String[]{"Count of Arrows hit"}, Material.ARROW),
     ARROW_MISS("arrowmiss", Counter.class, Tags.empty(), false, true, "Arrows missed",  new String[]{"Count of Arrows missed"}, Material.ARROW),
-    TIMES_SLEPT("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED);
+    TIMES_SLEPT("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY1("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY2("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY3("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY4("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY5("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY6("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY7("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    DUMMY8("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED);
+
     private final String key;
     private final Class<?> metricType;
     private final Tags tags;

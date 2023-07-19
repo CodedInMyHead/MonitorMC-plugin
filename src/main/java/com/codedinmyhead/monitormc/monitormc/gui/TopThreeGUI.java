@@ -25,7 +25,7 @@ public class TopThreeGUI implements Listener {
     private final Map<Integer, MetricsEnum> enumMapping = new HashMap<>();
 
     private int getSize() {
-        int extra = ((MetricsEnum.values().length / 9) + 1) * 9;
+        int extra = ((MetricsEnum.values().length / 7) + 1) * 9;
         return 36 + extra;
     }
     public TopThreeGUI() {
@@ -46,6 +46,11 @@ public class TopThreeGUI implements Listener {
         inventory.setItem(getSize() - 9, createGuiItem(Material.BARRIER, "§cBack", "§8Click here to close", "§8this inventory."));
 
         Arrays.stream(MetricsEnum.values()).filter(MetricsEnum::isLeaderboard).forEach(enumEntry -> {
+            if (position.get() % 9 == 8) {
+                position.set(position.get() + 2);
+            } else if (position.get() % 9 == 0) {
+                position.set(position.get() + 1);
+            }
             inventory.setItem(position.get(), createGuiItem(enumEntry.getMaterial(), "§6" + enumEntry.getName() ,
                     Arrays.stream(enumEntry.getLore())
                     .map(element -> "§7" + element)
@@ -170,12 +175,15 @@ public class TopThreeGUI implements Listener {
 
 
         final String title = mode == Mode.BEST ? "top" : "bottom";
+        final String scoreColor1 = placesScores[0] == 0 ? "§c" : "§2";
+        final String scoreColor2 = placesScores[1] == 0 ? "§c" : "§2";
+        final String scoreColor3 = placesScores[2] == 0 ? "§c" : "§2";
 
         inventory.setItem(4, createGuiItem(Material.OAK_SIGN, "§6"+"Leaderboards", "§8Below you can see the", "§8" + title + " 3 players in the category", "§8"+ metric.getName()));
 
-        inventory.setItem(20, createGuiItem(Material.IRON_BLOCK, "§a"+placesNames[1], "§82nd Place", "§d" + placesScores[1]));
-        inventory.setItem(22, createGuiItem(Material.GOLD_BLOCK, "§a"+placesNames[0], "§81st Place", "§d" + placesScores[0]));
-        inventory.setItem(24, createGuiItem(Material.COPPER_BLOCK, "§a"+placesNames[2], "§83rd Place", "§d" + placesScores[2]));
+        inventory.setItem(20, createGuiItem(Material.IRON_BLOCK, "§a"+placesNames[1], "§72nd Place", "§8Score: " + scoreColor2 + placesScores[1]));
+        inventory.setItem(22, createGuiItem(Material.GOLD_BLOCK, "§a"+placesNames[0], "§61st Place", "§8Score: " + scoreColor1 + placesScores[0]));
+        inventory.setItem(24, createGuiItem(Material.COPPER_BLOCK, "§a"+placesNames[2], "§83rd Place", "§8Score: " + scoreColor3 + placesScores[2]));
 
         inventory.setItem(getSize() - 9, createGuiItem(Material.BARRIER, "§cBack", "§8Click here to close", "§8this inventory."));
     }
