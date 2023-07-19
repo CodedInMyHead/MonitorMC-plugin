@@ -45,7 +45,7 @@ public final class MonitorMC extends JavaPlugin {
 //Speicherung der playerpath-Koordinaten:
 //ArrayList enthält 3 ArrayLists für koordinaten -> je eine für x, y, z
 //Position 0 -> für x; Position 1 -> für y; Position 2 -> für z
-    public Map<String, ArrayList<ArrayList<Double>>> collectionPlayerpaths = new HashMap();
+    public Map<String, ArrayList<Location>> collectionPlayerpaths = new HashMap();
 
     @Override
     public void onEnable() {
@@ -122,30 +122,18 @@ public final class MonitorMC extends JavaPlugin {
     }
 
     public void addCoordinatesToPlayerpath(Location pLoc, String pUUID){
-        ArrayList<ArrayList<Double>> pPath = new ArrayList<>();
-        String pName = Bukkit.getPlayer(pUUID).getName();
+        ArrayList<Location> pPath = new ArrayList<>();
+        String pName = Bukkit.getPlayer(UUID.fromString(pUUID)).getName();
 
         if (collectionPlayerpaths.containsKey(pUUID)){
             pPath = collectionPlayerpaths.get(pUUID);
-
-            ArrayList<Double> coords_x = pPath.get(0);
-            ArrayList<Double> coords_y = pPath.get(1);
-            ArrayList<Double> coords_z = pPath.get(2);
-
-            coords_x.add(pLoc.getX());
-            coords_y.add(pLoc.getY());
-            coords_z.add(pLoc.getZ());
-
-            pPath.set(0, coords_x);
-            pPath.set(1, coords_y);
-            pPath.set(2, coords_z);
-
+            pPath.add(pLoc);
             collectionPlayerpaths.replace(pUUID, pPath);
 
             //ändere entsprechenden polyLineMarker
             //erstelle PolyLineMarker wenn es erst zweite Koordinate ist
             //skip, wenn es erst erste Koordinate ist
-            int coordLength = pPath.get(0).size();
+            int coordLength = pPath.size();
             boolean createNew = false;
             if (!(coordLength == 1)) {
                 if (coordLength == 2) {
@@ -157,37 +145,24 @@ public final class MonitorMC extends JavaPlugin {
         }
         //wenn erste Koordinate die von diesem Spieler gespeichert wird:
         else {
-            ArrayList<Double> coords_x = new ArrayList<>();
-            ArrayList<Double> coords_y = new ArrayList<>();
-            ArrayList<Double> coords_z = new ArrayList<>();
-
-            coords_x.add(pLoc.getX());
-            coords_y.add(pLoc.getY());
-            coords_z.add(pLoc.getZ());
-
-            pPath.set(0, coords_x);
-            pPath.set(1, coords_y);
-            pPath.set(2, coords_z);
-
+            pPath.add(pLoc);
             collectionPlayerpaths.put(pUUID, pPath);
         }
     }
-    private void addCoordinateToPolyline(ArrayList<ArrayList<Double>> coords, String pName, boolean createNew){
+    private void addCoordinateToPolyline(ArrayList<Location> coords, String pName, boolean createNew){
         if (playerPaths != null){
-            //convert ArrayLists into arrays
-            int coordLength = coords.get(0).size();
+            //konvertiere Locations aus ArrayLists in 3 arrays
+            int coordLength = coords.size();
 
             double[] coords_x = new double[coordLength];
-            for (int i = 0; i < coordLength; i++)
-                coords_x[i] = coords.get(0).get(i);
-
             double[] coords_y = new double[coordLength];
-            for (int i = 0; i < coordLength; i++)
-                coords_y[i] = coords.get(1).get(i);
-
             double[] coords_z = new double[coordLength];
-            for (int i = 0; i < coordLength; i++)
-                coords_z[i] = coords.get(2).get(i);
+
+            for (int i = 0; i < coordLength; i++){
+                coords_x[i] = coords.get(i).getX();
+                coords_y[i] = coords.get(i).getY();
+                coords_z[i] = coords.get(i).getZ();
+            }
 
             if (createNew){
                 playerPaths.createPolyLineMarker(pName, "just a test label", true, "world", coords_x, coords_y, coords_z, false);
