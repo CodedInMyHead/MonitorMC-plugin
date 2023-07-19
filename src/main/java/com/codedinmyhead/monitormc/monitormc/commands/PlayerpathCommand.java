@@ -16,7 +16,7 @@ public class PlayerpathCommand implements CommandExecutor {
         if (sender instanceof Player){
             Player p = (Player) sender;
             Location pLoc = p.getLocation();
-            UUID pUUID = p.getUniqueId();
+            String pUUID = p.getUniqueId().toString();
 
             MonitorMC.INSTANCE.addCoordinatesToPlayerpath(pLoc, pUUID);
 
