@@ -2,36 +2,44 @@ package com.codedinmyhead.monitormc.monitormc.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.checkerframework.checker.units.qual.A;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StatsGUI implements Listener {
     private final Inventory inv;
 
-    public StatsGUI(Player p) {
+    private Player p;
+
+    public void setP(Player p) {
+        this.p = p;
+    }
+
+    public static final Map<UUID, StatsGUI> statsMap = new HashMap<>();
+
+    public StatsGUI() {
         // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
         inv = Bukkit.createInventory(null, 9*4, "Your Statistics");
-
         // Put the items into the inventory
-        initializeStats(p);
+        initializeFirstPage(p);
     }
 
     // You can call this whenever you want to put the items in
-    public void initializeStats(Player p) {
+    public void initializeFirstPage(Player p) {
         inv.setItem(0, (createGuiItem(Material.SKELETON_SKULL, "§cDeaths", p)));
         inv.setItem(2, (createGuiItem(Material.DIAMOND_SWORD, "§aKills", p)));
         inv.setItem(4, (createGuiItem(Material.COAL, "", p)));
@@ -47,7 +55,7 @@ public class StatsGUI implements Listener {
         });
     }
 
-    public ArrayList<EntityType> getMobs() {
+    public List<EntityType> getMobs() {
         ArrayList<EntityType> mobs = new ArrayList<>();
         for(EntityType entity : EntityType.values()) {
             assert entity.getEntityClass() != null;
@@ -58,8 +66,8 @@ public class StatsGUI implements Listener {
         return mobs;
     }
 
-    public HashMap<EntityType, Integer> getMobKills(ArrayList<EntityType> mobs, Player p) {
-        HashMap<EntityType, Integer> mobKills = new HashMap<>();
+    public Map<EntityType, Integer> getMobKills(List<EntityType> mobs, Player p) {
+        Map<EntityType, Integer> mobKills = new HashMap<>();
 
         for (EntityType mob : mobs) {
             mobKills.put(mob, p.getStatistic(Statistic.KILL_ENTITY, mob));
@@ -85,9 +93,15 @@ public class StatsGUI implements Listener {
     }
 
     protected ItemStack createGuiItem(final String entityName, final int kills) {
-        final ItemStack item = new ItemStack(Material.COAL, 1);
+        String material = "";
+
+        final ItemStack item = new ItemStack(Material.LEGACY_SKULL_ITEM, 1);
 //                Objects.requireNonNull(Material.getMaterial(material)), 1
+
         final ItemMeta meta = item.getItemMeta();
+
+        final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+        skullMeta.setOwner("Rypex");
 
         // Set the name of the
         String name = String.format("§9%s Kills: %d", entityName, kills);
@@ -96,6 +110,20 @@ public class StatsGUI implements Listener {
         item.setItemMeta(meta);
 
         return item;
+    }
+
+    public Map<UUID, EntityType> playerHeads(List<EntityType> mobs) {
+        Map<UUID, EntityType> heads = new HashMap<>();
+
+
+
+        return heads;
+    }
+
+    public OfflinePlayer getPlayerHead(Map<UUID, EntityType> playerHeads) {
+        OfflinePlayer player = (OfflinePlayer) p;
+
+        return player;
     }
 
     protected String createLore(final Material material, final Player p) {
@@ -142,10 +170,11 @@ public class StatsGUI implements Listener {
 
         final Player p = (Player) e.getWhoClicked();
 
-        // Using slots click is a best option for your inventory click's
+        // Using slots click is the best option for your inventory click's
         p.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
+            inv.clear();
             initializeMobKills(p);
         }
     }
@@ -156,6 +185,15 @@ public class StatsGUI implements Listener {
         if (e.getInventory().equals(inv)) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onInventoryClose(final InventoryCloseEvent e) {
+        StatsGUI gui = statsMap.get(e.getPlayer().getUniqueId());
+        if (gui == null) {
+            return;
+        }
+        statsMap.remove(e.getPlayer().getUniqueId());
     }
 
     public ItemStack getClicketItem(InventoryClickEvent e) {
