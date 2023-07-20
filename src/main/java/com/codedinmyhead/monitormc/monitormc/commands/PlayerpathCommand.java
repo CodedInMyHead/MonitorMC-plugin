@@ -37,19 +37,18 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             String pUUID = p.getUniqueId().toString();
 
             //Wechsel zwischen ausgewählten Modi
-            switch (args[1]){
-                case "sample":
-                    addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
+            if (args[1].equals("sample")) {
+                addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
+            }
+            else if (args[1] == "record") {
 
-                case "record":
-
-                case "delete":
-                    deleteThisPlayerpath(p, args[0]);
+            }
+            else if (args[1] == "delete"){
+                deleteThisPlayerpath(p, args[0]);
             }
 
 
-
-            sender.sendMessage("Position gespeichert");
+            sender.sendMessage("erfolgreich ausgeführt");
         }
 
         return false;
