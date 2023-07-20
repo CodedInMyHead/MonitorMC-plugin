@@ -120,48 +120,27 @@ public class StatsGUI implements Listener {
         return lore;
     }
 
-    public void InitializeFirstMobPage(Player p, Inventory i) {
+    public void InitializeFirstMobPage(Player p, Inventory i, int page) {
         i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
-        for (int index = 1; index<8; index++){
-            i.setItem(index, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
+        for (int k = 1; k<8; k++){
+            i.setItem(k, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
         }
         if (mobs().size() > 9*5/2){
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
         n.set(10);
-        for (int j = 0; j < 9*5/2; j++) {
+        for (int j = (page-1)*13; j < page*13; j++) {
             EntityType ent = mobs().get(j);
             int kills = getMobKills(mobs(), p).get(mobs().get(j));
             i.setItem(n.get(), (createGuiItem(ent, kills)));
             n.getAndAdd(2);
-            setIndex(j);
         };
     }
 
-    public int index;
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public void InitializeSecondMobPage(Player p, Inventory i) {
-        i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
-        for (int index = 1; index<8; index++){
-            i.setItem(index, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
-        }
-        if (mobs().size() > 9*5/2){
-            i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
-        }
-        AtomicInteger n = new AtomicInteger();
-        n.set(10);
-        for (int j = index; j < index+9*5/2; j++) {
-            EntityType ent = mobs().get(j);
-            int kills = getMobKills(mobs(), p).get(mobs().get(j));
-            i.setItem(n.get(), (createGuiItem(ent, kills)));
-            n.getAndAdd(2);
-            setIndex(j);
-            n.getAndAdd(2);
-        };
+    public int mobPage = 1;
+    public void setMobPage(int mobPage) {
+        this.mobPage = mobPage;
     }
 
     public Map<EntityType, Material> mobHeads() {
@@ -260,23 +239,24 @@ public class StatsGUI implements Listener {
         player.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
+            setMobPage(1);
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
             setPage("Mob Kills 1");
         }
-//        if (e.getRawSlot() == 0 && page.equals("Mob Kills 1")){
-//            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-//            reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
-//            setPage("Your Statistics");
-//        }
         if (e.getRawSlot() == 8 ){
+            setMobPage(mobPage++);
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            InitializeSecondMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
             setPage("Mob Kills 2");
         }
         if (e.getRawSlot() == 0 ){
+            setMobPage(mobPage--);
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            if (mobPage < 1){
+                reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            }
+            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
             setPage("Mob Kills 1");
         }
     }
