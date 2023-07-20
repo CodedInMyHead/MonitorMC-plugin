@@ -87,7 +87,10 @@ public class StatsGUI implements Listener {
         List<String> lore = new ArrayList<>();
         switch (material) {
             case PAPER -> {
-                lore.add("");
+                lore = null;
+            }
+            case GRAY_STAINED_GLASS_PANE -> {
+                lore = null;
             }
             case DIAMOND_SWORD -> {
                 int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
@@ -120,7 +123,7 @@ public class StatsGUI implements Listener {
     public void InitializeFirstMobPage(Player p, Inventory i) {
         i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         for (int index = 1; index<8; index++){
-            i.setItem(index, createGuiItem(Material.BARRIER, "", null));
+            i.setItem(index, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
         }
         if (mobs().size() > 9*5/2){
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
@@ -132,9 +135,10 @@ public class StatsGUI implements Listener {
         getMobKills(mobs(), p).forEach((k,v) -> {
             if (n.get() < 9*6) {
                 i.setItem(n.get(), (createGuiItem(k, v)));
-                n.getAndAdd(2);
-                m.getAndIncrement();
-        }});
+
+            }
+            n.getAndAdd(2);
+            m.getAndIncrement();});
         setIndex(m.get());
     }
 
@@ -146,7 +150,7 @@ public class StatsGUI implements Listener {
     public void InitializeSecondMobPage(Player p, Inventory i) {
         i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         for (int index = 1; index<8; index++){
-            i.setItem(index, createGuiItem(Material.BARRIER, "", null));
+            i.setItem(index, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
         }
         if (mobs().size() > 9*5/2){
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
@@ -159,9 +163,9 @@ public class StatsGUI implements Listener {
             if (m.get()>index){
                 if (n.get() < 9*6) {
                     i.setItem(n.get(), (createGuiItem(k, v)));
-                    n.getAndAdd(2);
-                    m.getAndIncrement();
-            }}});
+            }}
+            n.getAndAdd(2);
+            m.getAndIncrement();});
     }
 
     public Map<EntityType, Material> mobHeads() {
