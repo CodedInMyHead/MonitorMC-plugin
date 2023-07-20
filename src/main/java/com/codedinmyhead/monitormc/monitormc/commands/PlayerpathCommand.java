@@ -106,7 +106,7 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             completions.add("sample");
             completions.add("record");
         }
-        if (args[1].equals("record")) {
+        else if (args[1].equals("record")) {
             if (args.length == 3) {
                 completions.add("start");
                 completions.add("stop");
