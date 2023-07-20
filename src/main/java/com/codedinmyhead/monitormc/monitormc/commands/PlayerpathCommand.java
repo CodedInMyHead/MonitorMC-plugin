@@ -36,7 +36,17 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             Location pLoc = p.getLocation();
             String pUUID = p.getUniqueId().toString();
 
-            addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
+            //Wechsel zwischen ausgewählten Modi
+            switch (args[1]){
+                case "sample":
+                    addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
+
+                case "record":
+
+                case "delete":
+                    deleteThisPlayerpath(p, args[0]);
+            }
+
 
 
             sender.sendMessage("Position gespeichert");
@@ -44,6 +54,47 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
         return false;
     }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        List<String> completions = new ArrayList<>();
+        if (!(sender instanceof Player)) {
+            return completions;
+        }
+
+        if (args.length == 1) {
+            String UUIDofPlayerAsString = ((Player) sender).getPlayer().getUniqueId().toString();
+            if (pathNamesPerPlayer.containsKey(UUIDofPlayerAsString)){
+                ArrayList<String> PlayerPathNames = pathNamesPerPlayer.get(UUIDofPlayerAsString);
+                for (int i = 0; i < PlayerPathNames.size(); i++){
+                    completions.add(PlayerPathNames.get(i));
+                }
+            }
+            else {
+                completions.add("<name>");
+            }
+        }
+        else if (args.length == 2) {
+            completions.add("sample");
+            completions.add("record");
+        }
+        else if (args[1].equals("record")) {
+            if (args.length == 3) {
+                completions.add("start");
+                completions.add("stop");
+            }
+            else if (args.length == 4) {
+                completions.add("<threshold>");
+            }
+            else if (args.length == 5) {
+                completions.add("<sample rate>");
+            }
+        }
+
+        return completions;
+    }
+
+
 
     private void addCoordinatesToPlayerpath(Location pLoc, String pUUID, String pathName) {
         ArrayList<Location> pPath = new ArrayList<>();
@@ -112,42 +163,22 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        List<String> completions = new ArrayList<>();
-        if (!(sender instanceof Player)) {
-            return completions;
-        }
+    private void deleteThisPlayerpath(Player p, String pathName){
+        //Muss gelöscht werden:
+        //Koordinaten des path aus collectionPlayerpaths
+        //pathName des path aus pathNamesPerPlayer für entsprechenden Spieler
+        //PolyLine im Markerset
+        String uniquePathKey = p.getUniqueId().toString() + ";" + pathName;
+        collectionPlayerpaths.remove(uniquePathKey);
 
-        if (args.length == 1) {
-            String UUIDofPlayerAsString = ((Player) sender).getPlayer().getUniqueId().toString();
-            if (pathNamesPerPlayer.containsKey(UUIDofPlayerAsString)){
-                ArrayList<String> PlayerPathNames = pathNamesPerPlayer.get(UUIDofPlayerAsString);
-                for (int i = 0; i < PlayerPathNames.size(); i++){
-                    completions.add(PlayerPathNames.get(i));
-                }
-            }
-            else {
-                completions.add("<name>");
-            }
-        }
-        else if (args.length == 2) {
-            completions.add("sample");
-            completions.add("record");
-        }
-        else if (args[1].equals("record")) {
-            if (args.length == 3) {
-                completions.add("start");
-                completions.add("stop");
-            }
-            else if (args.length == 4) {
-                completions.add("<threshold>");
-            }
-            else if (args.length == 5) {
-                completions.add("<sample rate>");
-            }
-        }
+        String pUUID = p.getUniqueId().toString();
+        ArrayList<String> thosePathNames = pathNamesPerPlayer.get(pUUID);
+        thosePathNames.remove(pathName);
+        pathNamesPerPlayer.replace(pUUID, thosePathNames);
 
-        return completions;
+        String pName = p.getName();
+        MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName + ";" + pathName).deleteMarker();
     }
+
+
 }
