@@ -168,6 +168,11 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         //Koordinaten des path aus collectionPlayerpaths
         //pathName des path aus pathNamesPerPlayer für entsprechenden Spieler
         //PolyLine im Markerset
+        String pName = p.getName();
+        if (MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName + ";" + pathName) == null){
+            return;
+        }
+
         String uniquePathKey = p.getUniqueId().toString() + ";" + pathName;
         collectionPlayerpaths.remove(uniquePathKey);
 
@@ -176,8 +181,11 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         thosePathNames.remove(pathName);
         pathNamesPerPlayer.replace(pUUID, thosePathNames);
 
-        String pName = p.getName();
-        MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName + ";" + pathName).deleteMarker();
+
+
+
+            MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName + ";" + pathName).deleteMarker();
+
     }
 
 
