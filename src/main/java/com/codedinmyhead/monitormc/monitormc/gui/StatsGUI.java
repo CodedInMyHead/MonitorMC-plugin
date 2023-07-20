@@ -120,7 +120,7 @@ public class StatsGUI implements Listener {
         return lore;
     }
 
-    public void InitializeFirstMobPage(Player p, Inventory i, int page) {
+    public void InitializeMobPage(Player p, Inventory i, int page) {
         i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         for (int k = 1; k<8; k++){
             i.setItem(k, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
@@ -135,7 +135,7 @@ public class StatsGUI implements Listener {
             int kills = getMobKills(mobs(), p).get(mobs().get(j));
             i.setItem(n.get(), (createGuiItem(ent, kills)));
             n.getAndAdd(2);
-        };
+        }
     }
 
     public int mobPage = 1;
@@ -241,14 +241,12 @@ public class StatsGUI implements Listener {
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
             setMobPage(1);
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
-            setPage("Mob Kills 1");
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
         }
         if (e.getRawSlot() == 8 ){
             setMobPage(mobPage++);
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
-            setPage("Mob Kills 2");
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
         }
         if (e.getRawSlot() == 0 ){
             setMobPage(mobPage--);
@@ -256,14 +254,8 @@ public class StatsGUI implements Listener {
             if (mobPage < 1){
                 reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
             }
-            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
-            setPage("Mob Kills 1");
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
         }
-    }
-
-    public String page = "";
-    public void setPage(String page) {
-        this.page = page;
     }
 
     // Cancel dragging in our inventory
