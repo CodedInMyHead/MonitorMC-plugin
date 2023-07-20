@@ -50,10 +50,6 @@ public final class MonitorMC extends JavaPlugin {
     public void registerEvents() {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Below entry is not in enum because a reference to the topThreeGUI object is needed
-        // and only event register functionality is required
-        pluginManager.registerEvents(topThreeGUI, this);
-
         Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
             try {
                 pluginManager.registerEvents((Listener) entry.getClassType().getDeclaredConstructor().newInstance(), this);
