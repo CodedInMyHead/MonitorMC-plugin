@@ -129,17 +129,14 @@ public class StatsGUI implements Listener {
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
-        AtomicInteger m = new AtomicInteger();
         n.set(10);
-        m.set(0);
-        getMobKills(mobs(), p).forEach((k,v) -> {
-            if (n.get() < 9*6) {
-                i.setItem(n.get(), (createGuiItem(k, v)));
-
-            }
+        for (int j = 0; j < 9*5/2; j++) {
+            EntityType ent = mobs().get(j);
+            int kills = getMobKills(mobs(), p).get(mobs().get(j));
+            i.setItem(n.get(), (createGuiItem(ent, kills)));
             n.getAndAdd(2);
-            m.getAndIncrement();});
-        setIndex(m.get());
+            setIndex(j);
+        };
     }
 
     public int index;
@@ -156,16 +153,15 @@ public class StatsGUI implements Listener {
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
-        AtomicInteger m = new AtomicInteger();
         n.set(10);
-        m.set(0);
-        getMobKills(mobs(), p).forEach((k,v) -> {
-            if (m.get()>index){
-                if (n.get() < 9*6) {
-                    i.setItem(n.get(), (createGuiItem(k, v)));
-            }}
+        for (int j = index; j < index+9*5/2; j++) {
+            EntityType ent = mobs().get(j);
+            int kills = getMobKills(mobs(), p).get(mobs().get(j));
+            i.setItem(n.get(), (createGuiItem(ent, kills)));
             n.getAndAdd(2);
-            m.getAndIncrement();});
+            setIndex(j);
+            n.getAndAdd(2);
+        };
     }
 
     public Map<EntityType, Material> mobHeads() {
