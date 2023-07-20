@@ -263,17 +263,17 @@ public class StatsGUI implements Listener {
             InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
             setPage("Mob Kills 1");
         }
-        if (e.getRawSlot() == 0 && page.equals("Mob Kills 1")){
-            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
-            setPage("Your Statistics");
-        }
-        if (e.getRawSlot() == 8 && page.equals("Mob Kills 1")){
+//        if (e.getRawSlot() == 0 && page.equals("Mob Kills 1")){
+//            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
+//            reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+//            setPage("Your Statistics");
+//        }
+        if (e.getRawSlot() == 8 ){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeSecondMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
             setPage("Mob Kills 2");
         }
-        if (e.getRawSlot() == 0 && page.equals("Mob Kills 2")){
+        if (e.getRawSlot() == 0 ){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
             setPage("Mob Kills 1");
