@@ -10,7 +10,7 @@ public enum ActivatedListeners {
     ARROW_HIT(ArrowHitListener.class),
     Player_JOIN(PlayerJoinListener.class),
     SLEEP_LISTENER(SleepListener.class),
-    DASHBOARDGUI_LISTENER(DashboardGUI.class);
+    DASHBOARDGUI_LISTENER(DashboardGUI.class),
     LEADERBOARD_GUI(LeaderboardGUIListener.class);
 
     private final Class<?> classType;
