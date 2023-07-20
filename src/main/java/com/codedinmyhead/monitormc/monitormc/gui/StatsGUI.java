@@ -23,7 +23,7 @@ public class StatsGUI implements Listener {
 
     public StatsGUI(Player p) {
         // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
-        inv = Bukkit.createInventory(null, 9*4, "Your Statistics");
+        inv = Bukkit.createInventory(null, 9*6, "Your Statistics");
         // Put the items into the inventory
 
         if (p != null) {
@@ -125,12 +125,12 @@ public class StatsGUI implements Listener {
         for (int k = 1; k<8; k++){
             i.setItem(k, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, null, null));
         }
-        if (mobs().size() > 9*5/2){
+        if (mobs().size() - (22*(page-1)) > 22){
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
         n.set(10);
-        for (int j = (page-1)*13; j < page*13; j++) {
+        for (int j = (page-1)*22; j < page*22; j++) {
             EntityType ent = mobs().get(j);
             int kills = getMobKills(mobs(), p).get(mobs().get(j));
             i.setItem(n.get(), (createGuiItem(ent, kills)));
@@ -239,17 +239,18 @@ public class StatsGUI implements Listener {
         player.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
-            setMobPage(1);
+            mobPage = 1;
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
         }
         if (e.getRawSlot() == 8 ){
-            setMobPage(mobPage++);
+            mobPage += 1;
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
+            e.getWhoClicked().sendMessage("Clicked 8 -- show page:" + mobPage);
             InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
         }
         if (e.getRawSlot() == 0 ){
-            setMobPage(mobPage--);
+            mobPage -= 1;
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             if (mobPage < 1){
                 reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
