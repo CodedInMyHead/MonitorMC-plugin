@@ -139,9 +139,6 @@ public class StatsGUI implements Listener {
     }
 
     public int mobPage = 1;
-    public void setMobPage(int mobPage) {
-        this.mobPage = mobPage;
-    }
 
     public Map<EntityType, Material> mobHeads() {
         Map<EntityType, Material> heads = new LinkedHashMap<>();
@@ -239,15 +236,13 @@ public class StatsGUI implements Listener {
         player.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
-            mobPage = 1;
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage = 1);
         }
         if (e.getRawSlot() == 8 ){
-            mobPage += 1;
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             e.getWhoClicked().sendMessage("Clicked 8 -- show page:" + mobPage);
-            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage++);
         }
         if (e.getRawSlot() == 0 ){
             mobPage -= 1;
@@ -255,7 +250,7 @@ public class StatsGUI implements Listener {
             if (mobPage < 1){
                 reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
             }
-            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage--);
         }
     }
 
