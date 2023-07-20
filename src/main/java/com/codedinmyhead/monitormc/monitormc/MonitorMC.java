@@ -1,7 +1,9 @@
 package com.codedinmyhead.monitormc.monitormc;
 
+import com.codedinmyhead.monitormc.monitormc.commands.KillCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
+import com.codedinmyhead.monitormc.monitormc.listeners.ArrowKillListener;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
@@ -15,6 +17,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public final class MonitorMC extends JavaPlugin {
 
@@ -27,12 +30,16 @@ public final class MonitorMC extends JavaPlugin {
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
 
+    private HashMap<String, Integer> killCounts = new HashMap<>();
+
     @Override
     public void onEnable() {
         registerEvents();
         registerCommands();
 
         createAccuracyBow();
+
+        new ArrowKillListener();
 
         MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
 
@@ -58,6 +65,8 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        getCommand("killcount").setExecutor(new KillCommand(killCounts));
+
     }
 
     public void createAccuracyBow() {
@@ -66,5 +75,6 @@ public final class MonitorMC extends JavaPlugin {
         bowMeta.displayName(Component.text("Accuracy Bow"));
         accuracyBow.setItemMeta(bowMeta);
     }
+
 
 }

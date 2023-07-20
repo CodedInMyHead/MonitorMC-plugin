@@ -69,7 +69,12 @@ public class ArrowKillListener implements Listener {
                 return false;
         }
     }
+
     public int getKillCount(Player player) {
         return killCounts.getOrDefault(player.getName(), 0);
+    }
+
+    public void resetKillCount(Player player) {
+        killCounts.put(player.getName(), 0);
     }
 }
