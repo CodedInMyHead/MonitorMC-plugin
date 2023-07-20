@@ -70,6 +70,8 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             return completions;
         }
 
+        Player p = ((Player) sender).getPlayer();
+
         if (args.length == 1) {
             String UUIDofPlayerAsString = ((Player) sender).getPlayer().getUniqueId().toString();
             if (pathNamesPerPlayer.containsKey(UUIDofPlayerAsString)){
@@ -83,21 +85,30 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             }
         }
         else if (args.length == 2) {
-            completions.add("sample");
-            completions.add("record");
-            completions.add("delete");
-            completions.add("create");
+            if (pathNamesPerPlayer.get(p.getUniqueId().toString()).contains(args[0])){
+                completions.add("sample");
+                completions.add("record");
+                completions.add("delete");
+            }
+            else {
+                completions.add("create");
+            }
         }
         else if (args[1].equals("record")) {
             if (args.length == 3) {
-                completions.add("start");
-                completions.add("stop");
-            }
-            else if (args.length == 4) {
-                completions.add("<threshold>");
-            }
-            else if (args.length == 5) {
-                completions.add("<sample rate>");
+                if (currentlyRecording.get(getUniquePathKey(p.getUniqueId().toString(), args[0]))){
+                    completions.add("stop");
+                }
+                else{
+                    completions.add("start");
+
+                    if (args.length == 4) {
+                        completions.add("<threshold>");
+                    }
+                    else if (args.length == 5) {
+                        completions.add("<sample rate>");
+                    }
+                }
             }
         }
 
