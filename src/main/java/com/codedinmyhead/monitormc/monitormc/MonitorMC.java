@@ -65,7 +65,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
-        getCommand("killcount").setExecutor(new KillCommand(killCounts));
+        Bukkit.getPluginCommand("killcount").setExecutor(new KillCommand(killCounts));
 
     }
 
