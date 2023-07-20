@@ -40,10 +40,11 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             if (args[1].equals("sample")) {
                 addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
             }
-            else if (args[1] == "record") {
+            else if (args[1].equals("record")) {
 
             }
-            else if (args[1] == "delete"){
+            else if (args[1].equals("delete")){
+                sender.sendMessage("delete angefangen");
                 deleteThisPlayerpath(p, args[0]);
             }
 
@@ -76,6 +77,7 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         else if (args.length == 2) {
             completions.add("sample");
             completions.add("record");
+            completions.add("delete");
         }
         else if (args[1].equals("record")) {
             if (args.length == 3) {
