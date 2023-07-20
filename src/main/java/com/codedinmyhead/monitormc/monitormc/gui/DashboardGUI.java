@@ -45,7 +45,7 @@ public class DashboardGUI implements Listener {
         String customUrl = MonitorMC.INSTANCE.getCustomDashboardConfig().getString("grafana-url");
         this.GRAFANA_URL = (customUrl == null) ? "https://localhost:3000" : customUrl;
         FileConfiguration configFile = MonitorMC.INSTANCE.getCustomDashboardConfig();
-        ConfigurationSection dashboards = configFile.getConfigurationSection("dashboarsds");
+        ConfigurationSection dashboards = configFile.getConfigurationSection("dashboards");
         int slot = 0;
         for(String s : dashboards.getKeys(false)) {
             if(slot > this.invSize)
