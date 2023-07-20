@@ -109,8 +109,8 @@ public class StatsGUI implements Listener {
                         totalDistance += p.getStatistic(s);
                     }
                 }
-                lore.add(String.format("$1Total: §b%d", totalDistance));
-                lore.add(String.format("$1By foot: §b%d", distanceByFoot));
+                lore.add(String.format("§1Total: §b%d §1Blocks", totalDistance));
+                lore.add(String.format("§1By foot: §b%d §1Blocks", distanceByFoot));
             }
             default -> lore.add("§cNo lore yet");
         }
@@ -261,23 +261,28 @@ public class StatsGUI implements Listener {
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
-            e.getView().setTitle("Mob Kills 1");
+            setPage("Mob Kills 1");
         }
-        if (e.getRawSlot() == 0 && e.getView().getTitle().equals("Mob Kills 1")){
+        if (e.getRawSlot() == 0 && page.equals("Mob Kills 1")){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
-            e.getView().setTitle("Your Statistics");
+            setPage("Your Statistics");
         }
-        if (e.getRawSlot() == 8 && e.getView().getTitle().equals("Mob Kills 1")){
+        if (e.getRawSlot() == 8 && page.equals("Mob Kills 1")){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeSecondMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
-            e.getView().setTitle("Mob Kills 2");
+            setPage("Mob Kills 2");
         }
-        if (e.getRawSlot() == 0 && e.getView().getTitle().equals("Mob Kills 2")){
+        if (e.getRawSlot() == 0 && page.equals("Mob Kills 2")){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
-            e.getView().setTitle("Mob Kills 1");
+            setPage("Mob Kills 1");
         }
+    }
+
+    public String page = "";
+    public void setPage(String page) {
+        this.page = page;
     }
 
     // Cancel dragging in our inventory
