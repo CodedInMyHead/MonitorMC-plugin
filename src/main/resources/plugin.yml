@@ -7,6 +7,11 @@ authors: [ Micha, Ole, Shanine ]
 commands:
   monitormc:
     description: Test command
+  leaderboard:
+    description: Shows the leaderboards
+    aliases:
+      - top3
+      - lb
   accuracybow:
       description: Gives Player the accuracy bow
       aliases:

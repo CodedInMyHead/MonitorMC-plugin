@@ -15,3 +15,6 @@ Developers:
 - Micha
 - Ole
 - Shanine
+- Joachim
+- Richard
+- Tristan

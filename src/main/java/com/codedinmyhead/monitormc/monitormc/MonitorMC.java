@@ -4,6 +4,8 @@ import com.codedinmyhead.monitormc.monitormc.commands.DashboardGuiCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
 import com.codedinmyhead.monitormc.monitormc.gui.DashboardGUI;
+import com.codedinmyhead.monitormc.monitormc.commands.TopThreeCommand;
+import com.codedinmyhead.monitormc.monitormc.gui.TopThreeGUI;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
@@ -39,6 +41,8 @@ public final class MonitorMC extends JavaPlugin {
     private File customDashboardConfigFile;
     private FileConfiguration customDashboardConfig;
 
+    public final static TopThreeGUI topThreeGUI = new TopThreeGUI();
+
     @Override
     public void onEnable() {
         createAccuracyBow();
@@ -65,16 +69,17 @@ public final class MonitorMC extends JavaPlugin {
         Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
             try {
                 pluginManager.registerEvents((Listener) entry.getClassType().getDeclaredConstructor().newInstance(), this);
-
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                getLogger().warning("ActiveListener entry " + entry + " threw an exception in initialization!");
+            }
         });
     }
 
     public void registerCommands() {
-
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
         Bukkit.getPluginCommand("dashboards").setExecutor(new DashboardGuiCommand());
+        Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());
     }
 
     public void createAccuracyBow() {
