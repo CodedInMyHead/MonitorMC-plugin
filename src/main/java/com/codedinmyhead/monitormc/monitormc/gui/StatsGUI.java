@@ -160,6 +160,7 @@ public class StatsGUI implements Listener {
                 if (n.get() < 9*6) {
                     i.setItem(n.get(), (createGuiItem(k, v)));
                     n.getAndAdd(2);
+                    m.getAndIncrement();
             }}});
     }
 
