@@ -85,7 +85,12 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             }
         }
         else if (args.length == 2) {
-            if (pathNamesPerPlayer.get(p.getUniqueId().toString()).contains(args[0])){
+            ArrayList<String> pathsOfPlayer = null;
+            if (pathNamesPerPlayer.containsKey(p.getUniqueId().toString())) {
+                pathsOfPlayer = pathNamesPerPlayer.get(p.getUniqueId().toString());
+            }
+
+            if (pathsOfPlayer != null && pathsOfPlayer.contains(args[0])){
                 completions.add("sample");
                 completions.add("record");
                 completions.add("delete");
