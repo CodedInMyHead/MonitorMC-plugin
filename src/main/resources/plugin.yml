@@ -4,6 +4,8 @@ main: com.codedinmyhead.monitormc.monitormc.MonitorMC
 api-version: '1.20'
 prefix: MonitorMC
 authors: [ Micha, Ole, Shanine ]
+softdepend:
+  - dynmap
 commands:
   monitormc:
     description: Test command
@@ -16,5 +18,7 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  waypoint:
+    description: everything with waypoints
   dashboards:
       description: Shows a selection of predefined Grafana Dashboards
