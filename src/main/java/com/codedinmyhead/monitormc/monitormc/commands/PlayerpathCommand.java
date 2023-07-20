@@ -95,30 +95,28 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         List<String> completions = new ArrayList<>();
-//        Map<String, Icon> enumMap = new HashMap<>();
         if (!(sender instanceof Player)) {
             return completions;
         }
 
-        Player player = (Player) sender;
-
         if (args.length == 1) {
             completions.add("<name>");
-//            completions.add("help");
-
-            return completions;
         }
         else if (args.length == 2) {
-            completions.add("<mode>");
+            completions.add("sample");
+            completions.add("record");
         }
-        else if (args.length == 3) {
-            completions.add("<action>");
-        }
-        else if (args.length == 4) {
-            completions.add("<threshold>");
-        }
-        else if (args.length == 5) {
-            completions.add("<sample rate>");
+        if (args[1].equals("record")) {
+            if (args.length == 3) {
+                completions.add("start");
+                completions.add("stop");
+            }
+            else if (args.length == 4) {
+                completions.add("<threshold>");
+            }
+            else if (args.length == 5) {
+                completions.add("<sample rate>");
+            }
         }
 
         return completions;
