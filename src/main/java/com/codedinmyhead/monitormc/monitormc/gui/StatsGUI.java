@@ -35,10 +35,10 @@ public class StatsGUI implements Listener {
     public void initializeFirstPage(Player p) {
         inv.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         AtomicInteger n = new AtomicInteger();
-        n.set(10);
         if (statsItems().size() > 9*5/2){
             inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
+        n.set(10);
         statsItems().forEach((k,v) -> {
             inv.setItem(n.get(), createGuiItem(k, v, p));
             n.getAndAdd(2);
@@ -59,8 +59,7 @@ public class StatsGUI implements Listener {
     }
 
     public Map<Material, String> statsItems(){
-        Map<Material, String> items = new HashMap<>();
-        items.put(Material.PAPER, "BACK");
+        Map<Material, String> items = new LinkedHashMap<>();
         items.put(Material.DIAMOND_SWORD, "§dDeaths");
         items.put(Material.SKELETON_SKULL, "§dKills");
         items.put(Material.ELYTRA, "§dDistance Travelled");
@@ -87,6 +86,9 @@ public class StatsGUI implements Listener {
     protected List<String> createLore(final Material material, final Player p) {
         List<String> lore = new ArrayList<>();
         switch (material) {
+            case PAPER -> {
+                lore.add("");
+            }
             case DIAMOND_SWORD -> {
                 int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
                 int mobKills = p.getStatistic(Statistic.MOB_KILLS);
@@ -121,15 +123,21 @@ public class StatsGUI implements Listener {
             inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
+        AtomicInteger m = new AtomicInteger();
         n.set(10);
+        m.set(0);
         getMobKills(mobs(), p).forEach((k,v) -> {
             if (n.get() < 9*6) {
                 i.setItem(n.get(), (createGuiItem(k, v)));
                 n.getAndAdd(2);
-            }else{
+                m.getAndIncrement();
+        }});
+        setIndex(m.get());
+    }
 
-            }
-        });
+    public int index;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void InitializeSecondMobPage(Player p, Inventory i) {
@@ -138,19 +146,19 @@ public class StatsGUI implements Listener {
             inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
+        AtomicInteger m = new AtomicInteger();
         n.set(10);
+        m.set(0);
         getMobKills(mobs(), p).forEach((k,v) -> {
-            if (n.get() < 9*6) {
-                i.setItem(n.get(), (createGuiItem(k, v)));
-                n.getAndAdd(2);
-            }else{
-
-            }
-        });
+            if (m.get()>index){
+                if (n.get() < 9*6) {
+                    i.setItem(n.get(), (createGuiItem(k, v)));
+                    n.getAndAdd(2);
+            }}});
     }
 
     public Map<EntityType, Material> mobHeads() {
-        Map<EntityType, Material> heads = new HashMap<>();
+        Map<EntityType, Material> heads = new LinkedHashMap<>();
 
         heads.put(EntityType.BLAZE, Material.BLAZE_ROD);
         heads.put(EntityType.CREEPER, Material.CREEPER_HEAD);
@@ -252,14 +260,17 @@ public class StatsGUI implements Listener {
         if (e.getRawSlot() == 0 && e.getView().getTitle().equals("Mob Kills 1")){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            e.getView().setTitle("Your Statistics");
         }
-        if (e.getRawSlot() == 8 && e.getView().getTitle().equals("Mob Kills 2")){
+        if (e.getRawSlot() == 8 && e.getView().getTitle().equals("Mob Kills 1")){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeSecondMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            e.getView().setTitle("Mob Kills 2");
         }
         if (e.getRawSlot() == 0 && e.getView().getTitle().equals("Mob Kills 2")){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            e.getView().setTitle("Mob Kills 1");
         }
     }
 
