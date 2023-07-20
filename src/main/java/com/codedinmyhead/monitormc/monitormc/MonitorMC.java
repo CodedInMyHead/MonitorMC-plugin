@@ -103,4 +103,15 @@ public final class MonitorMC extends JavaPlugin {
     public FileConfiguration getCustomDashboardConfig() {
         return this.customDashboardConfig;
     }
+
+    public boolean reloadCustomDashboardConfig() {
+        try {
+            customDashboardConfig.load(customDashboardConfigFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+            return false;
+        }
+        this.dashboardGUI = new DashboardGUI();
+        return true;
+    }
 }
