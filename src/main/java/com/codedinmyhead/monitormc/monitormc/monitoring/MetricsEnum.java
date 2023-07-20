@@ -10,6 +10,9 @@ public enum MetricsEnum implements IMonitoringMetric {
     ARROW_HIT("arrowhit", Counter.class, Tags.empty(), false, true, "Arrows hit", new String[]{"Count of Arrows hit"}, Material.ARROW),
     ARROW_MISS("arrowmiss", Counter.class, Tags.empty(), false, true, "Arrows missed",  new String[]{"Count of Arrows missed"}, Material.ARROW),
     TIMES_SLEPT("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+
+    RESOURCES_COLLECTED("resourcescollected", Counter.class, Tags.empty(), false, true, "Resources Collected", new String[]{"Amount of Resources","that have been collected."}, Material.DIRT),
+
     DUMMY1("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
     DUMMY2("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
     DUMMY3("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
