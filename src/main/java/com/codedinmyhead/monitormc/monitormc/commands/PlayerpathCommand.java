@@ -9,17 +9,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.dynmap.markers.Marker;
+import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.PolyLineMarker;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
+    private final MarkerAPI markerAPI = MonitorMC.INSTANCE.markerAPI;
+
     //Speicherung der playerpath-Koordinaten:
     //ArrayList enthält 3 ArrayLists für koordinaten -> je eine für x, y, z
     //Position 0 -> für x; Position 1 -> für y; Position 2 -> für z
-    private Map<String, ArrayList<Location>> collectionPlayerpaths = new HashMap();
+    private Map<String, ArrayList<Location>> collectionPlayerpaths = new HashMap<>();
+
+    //Speicherung der verschiedenen pathNames zu den paths, welche ein einzelner Spieler erstellen kann
+    private Map<String, ArrayList<String>> pathNamesPerPlayer = new HashMap<>();
 
 
     @Override
@@ -29,24 +36,24 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             Location pLoc = p.getLocation();
             String pUUID = p.getUniqueId().toString();
 
-//            MonitorMC.INSTANCE.addCoordinatesToPlayerpath(pLoc, pUUID);
-            addCoordinatesToPlayerpath(pLoc, pUUID);
+            addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
 
 
-            sender.sendMessage("Position gespeichert. Argumente: " + args[0]);
+            sender.sendMessage("Position gespeichert");
         }
 
         return false;
     }
 
-    private void addCoordinatesToPlayerpath(Location pLoc, String pUUID) {
+    private void addCoordinatesToPlayerpath(Location pLoc, String pUUID, String pathName) {
         ArrayList<Location> pPath = new ArrayList<>();
         String pName = Bukkit.getPlayer(UUID.fromString(pUUID)).getName();
+        String uniquePathKey = pUUID + pathName;
 
-        if (collectionPlayerpaths.containsKey(pUUID)) {
-            pPath = collectionPlayerpaths.get(pUUID);
+        if (collectionPlayerpaths.containsKey(uniquePathKey)) {
+            pPath = collectionPlayerpaths.get(uniquePathKey);
             pPath.add(pLoc);
-            collectionPlayerpaths.replace(pUUID, pPath);
+            collectionPlayerpaths.replace(uniquePathKey, pPath);
 
             //ändere entsprechenden polyLineMarker
             //erstelle PolyLineMarker wenn es erst zweite Koordinate ist
@@ -58,17 +65,30 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
                     createNew = true;
                 }
 
-                addCoordinateToPolyline(pPath, pName, createNew);
+                addCoordinateToPolyline(pPath, pName, pathName, createNew);
             }
         }
-        //wenn erste Koordinate die von diesem Spieler gespeichert wird:
+        //wenn erste Koordinate die von diesen Spielerpath gespeichert wird:
         else {
             pPath.add(pLoc);
-            collectionPlayerpaths.put(pUUID, pPath);
+            collectionPlayerpaths.put(uniquePathKey, pPath);
+            ArrayList<String> temporaryPathNames = new ArrayList<>();
+
+            //füge pathName zu Pathnameliste (pathNamesPerPlayer) des Spielers hinzu
+            if (pathNamesPerPlayer.containsKey(pUUID)) {
+                temporaryPathNames = pathNamesPerPlayer.get(pUUID);
+                temporaryPathNames.add(pathName);
+                pathNamesPerPlayer.replace(pUUID, temporaryPathNames);
+            }
+            else{
+                temporaryPathNames.add(pathName);
+                pathNamesPerPlayer.put(pUUID, temporaryPathNames);
+            }
+
         }
     }
 
-    private void addCoordinateToPolyline(ArrayList<Location> coords, String pName, boolean createNew) {
+    private void addCoordinateToPolyline(ArrayList<Location> coords, String pName, String pathName, boolean createNew) {
         if (MonitorMC.INSTANCE.playerPaths != null) {
             //konvertiere Locations aus ArrayLists in 3 arrays
             int coordLength = coords.size();
@@ -84,9 +104,9 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             }
 
             if (createNew) {
-                MonitorMC.INSTANCE.playerPaths.createPolyLineMarker(pName, "just a test label", true, "world", coords_x, coords_y, coords_z, false);
+                MonitorMC.INSTANCE.playerPaths.createPolyLineMarker(pName + ";" + pathName, pathName, true, "world", coords_x, coords_y, coords_z, false);
             } else {
-                MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName).setCornerLocations(coords_x, coords_y, coords_z);
+                MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName + ";" + pathName).setCornerLocations(coords_x, coords_y, coords_z);
             }
 
         }
@@ -100,7 +120,16 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            completions.add("<name>");
+            String UUIDofPlayerAsString = ((Player) sender).getPlayer().getUniqueId().toString();
+            if (pathNamesPerPlayer.containsKey(UUIDofPlayerAsString)){
+                ArrayList<String> PlayerPathNames = pathNamesPerPlayer.get(UUIDofPlayerAsString);
+                for (int i = 0; i < PlayerPathNames.size(); i++){
+                    completions.add(PlayerPathNames.get(i));
+                }
+            }
+            else {
+                completions.add("<name>");
+            }
         }
         else if (args.length == 2) {
             completions.add("sample");
