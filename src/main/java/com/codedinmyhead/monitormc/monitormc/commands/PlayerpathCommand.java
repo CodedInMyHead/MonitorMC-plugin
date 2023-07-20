@@ -108,6 +108,19 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
             return completions;
         }
+        else if (args.length == 2) {
+            completions.add("<mode>");
+        }
+        else if (args.length == 3) {
+            completions.add("<action>");
+        }
+        else if (args.length == 4) {
+            completions.add("<threshold>");
+        }
+        else if (args.length == 5) {
+            completions.add("<sample rate>");
+        }
+
         return completions;
     }
 }
