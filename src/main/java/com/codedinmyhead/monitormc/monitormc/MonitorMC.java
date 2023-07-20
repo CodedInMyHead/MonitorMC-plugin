@@ -1,11 +1,8 @@
 package com.codedinmyhead.monitormc.monitormc;
 
-import com.codedinmyhead.monitormc.monitormc.commands.DashboardGuiCommand;
-import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
-import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
-import com.codedinmyhead.monitormc.monitormc.commands.WaypointSet;
+import com.codedinmyhead.monitormc.monitormc.commands.*;
 import com.codedinmyhead.monitormc.monitormc.gui.DashboardGUI;
-import com.codedinmyhead.monitormc.monitormc.commands.TopThreeCommand;
+import com.codedinmyhead.monitormc.monitormc.gui.StatsGUI;
 import com.codedinmyhead.monitormc.monitormc.gui.TopThreeGUI;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
@@ -49,6 +46,8 @@ public final class MonitorMC extends JavaPlugin {
     private FileConfiguration customDashboardConfig;
 
     public final static TopThreeGUI topThreeGUI = new TopThreeGUI();
+
+    public StatsGUI statsGui = new StatsGUI(null);
   
     @Override
     public void onEnable() {
@@ -82,6 +81,8 @@ public final class MonitorMC extends JavaPlugin {
 
         pluginManager.registerEvents(dashboardGUI, this);
 
+        pluginManager.registerEvents(statsGui, this);
+
         Arrays.asList(ActivatedListeners.values()).forEach(entry -> {
             try {
                 pluginManager.registerEvents((Listener) entry.getClassType().getDeclaredConstructor().newInstance(), this);
@@ -99,6 +100,7 @@ public final class MonitorMC extends JavaPlugin {
         waypointCommand.setTabCompleter(new WaypointSet());
         Bukkit.getPluginCommand("dashboards").setExecutor(new DashboardGuiCommand());
         Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());
+        Bukkit.getPluginCommand("stats").setExecutor(new DefaultStatsCommand());
     }
 
     public void createAccuracyBow() {
