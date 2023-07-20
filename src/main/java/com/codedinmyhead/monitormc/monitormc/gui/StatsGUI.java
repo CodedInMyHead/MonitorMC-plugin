@@ -119,8 +119,11 @@ public class StatsGUI implements Listener {
 
     public void InitializeFirstMobPage(Player p, Inventory i) {
         i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
+        for (int index = 1; index<8; index++){
+            i.setItem(index, createGuiItem(Material.BARRIER, "", null));
+        }
         if (mobs().size() > 9*5/2){
-            inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
+            i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
         AtomicInteger m = new AtomicInteger();
@@ -142,8 +145,11 @@ public class StatsGUI implements Listener {
 
     public void InitializeSecondMobPage(Player p, Inventory i) {
         i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
+        for (int index = 1; index<8; index++){
+            i.setItem(index, createGuiItem(Material.BARRIER, "", null));
+        }
         if (mobs().size() > 9*5/2){
-            inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
+            i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         AtomicInteger n = new AtomicInteger();
         AtomicInteger m = new AtomicInteger();
