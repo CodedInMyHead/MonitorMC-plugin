@@ -16,3 +16,5 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  dashboards:
+      description: Shows a selection of predefined Grafana Dashboards
