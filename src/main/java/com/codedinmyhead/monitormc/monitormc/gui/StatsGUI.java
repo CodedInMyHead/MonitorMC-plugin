@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,69 +33,39 @@ public class StatsGUI implements Listener {
 
     // You can call this whenever you want to put the items in
     public void initializeFirstPage(Player p) {
-        inv.setItem(0, (createGuiItem(Material.SKELETON_SKULL, "§cDeaths", p)));
-        inv.setItem(2, (createGuiItem(Material.DIAMOND_SWORD, "§aKills", p)));
-        inv.setItem(4, (createGuiItem(Material.COAL, "", p)));
-        inv.setItem(6, (createGuiItem(Material.COAL, "", p)));
-        inv.setItem(8, (createGuiItem(Material.COAL, "", p)));
-    }
-
-    public void initializeMobKills(Player p, Inventory i) {
+        inv.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         AtomicInteger n = new AtomicInteger();
-        n.set(0);
-        getMobKills(mobs(), p).forEach((k,v) -> {
-            i.setItem(n.get(), (createGuiItem(k, v)));
-            if (n.get()%9 == 0) {n.set(n.getAndIncrement());}else{n.getAndAdd(2);}
+        n.set(10);
+        if (statsItems().size() > 9*5/2){
+            inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
+        }
+        statsItems().forEach((k,v) -> {
+            inv.setItem(n.get(), createGuiItem(k, v, p));
+            n.getAndAdd(2);
         });
     }
 
-    public List<EntityType> mobs() {
-        List<EntityType> mobs = new ArrayList<>();
-
-        mobs.add(EntityType.BLAZE);
-        mobs.add(EntityType.CREEPER);
-        mobs.add(EntityType.DROWNED);
-        mobs.add(EntityType.ENDERMAN);
-        mobs.add(EntityType.ENDER_DRAGON);
-        mobs.add(EntityType.ELDER_GUARDIAN);
-        mobs.add(EntityType.EVOKER);
-        mobs.add(EntityType.GHAST);
-        mobs.add(EntityType.GUARDIAN);
-        mobs.add(EntityType.HOGLIN);
-        mobs.add(EntityType.HUSK);
-        mobs.add(EntityType.MAGMA_CUBE);
-        mobs.add(EntityType.PHANTOM);
-        mobs.add(EntityType.PIGLIN);
-        mobs.add(EntityType.PIGLIN_BRUTE);
-        mobs.add(EntityType.PILLAGER);
-        mobs.add(EntityType.RAVAGER);
-        mobs.add(EntityType.SHULKER);
-        mobs.add(EntityType.SILVERFISH);
-        mobs.add(EntityType.SKELETON);
-        mobs.add(EntityType.SLIME);
-        mobs.add(EntityType.STRAY);
-        mobs.add(EntityType.VEX);
-        mobs.add(EntityType.VINDICATOR);
-        mobs.add(EntityType.WARDEN);
-        mobs.add(EntityType.WITCH);
-        mobs.add(EntityType.WITHER);
-        mobs.add(EntityType.WITHER_SKELETON);
-        mobs.add(EntityType.ZOGLIN);
-        mobs.add(EntityType.ZOMBIE);
-        mobs.add(EntityType.ZOMBIFIED_PIGLIN);
-        mobs.add(EntityType.ZOMBIE_VILLAGER);
-
-        return mobs;
+    public void reinitializeFirstPage(Player p, Inventory i) {
+        i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
+        AtomicInteger n = new AtomicInteger();
+        n.set(10);
+        if (statsItems().size() > 9*5/2){
+            i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
+        }
+        statsItems().forEach((k,v) -> {
+            i.setItem(n.get(), createGuiItem(k, v, p));
+            n.getAndAdd(2);
+        });
     }
 
-    public Map<EntityType, Integer> getMobKills(List<EntityType> mobs, Player p) {
-        Map<EntityType, Integer> mobKills = new HashMap<>();
-
-        for (EntityType mob : mobs) {
-            mobKills.put(mob, p.getStatistic(Statistic.KILL_ENTITY, mob));
-        }
-
-        return mobKills;
+    public Map<Material, String> statsItems(){
+        Map<Material, String> items = new HashMap<>();
+        items.put(Material.PAPER, "BACK");
+        items.put(Material.DIAMOND_SWORD, "§dDeaths");
+        items.put(Material.SKELETON_SKULL, "§dKills");
+        items.put(Material.ELYTRA, "§dDistance Travelled");
+        items.put(Material.COAL, "not yet");
+        return items;
     }
 
     // Nice little method to create a gui item with a custom name, and description
@@ -115,19 +84,69 @@ public class StatsGUI implements Listener {
         return item;
     }
 
-    protected ItemStack createGuiItem(final EntityType entity, final int kills) {
-        final ItemStack item = new ItemStack(mobHeads().get(entity), 1);
-//                Objects.requireNonNull(Material.getMaterial(material)), 1
+    protected List<String> createLore(final Material material, final Player p) {
+        List<String> lore = new ArrayList<>();
+        switch (material) {
+            case DIAMOND_SWORD -> {
+                int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
+                int mobKills = p.getStatistic(Statistic.MOB_KILLS);
+                lore.add(String.format("§1Player Kills: §b%d", playerKills));
+                lore.add(String.format("§1Mob Kills: %d (§bClick §1to see all Mob specific kills)", mobKills));
+            }
+            case SKELETON_SKULL -> {
+                int totalDeaths = p.getStatistic(Statistic.DEATHS);
+                lore.add(String.format("§1Total Deaths: §b%d", totalDeaths));
+            }
+            case ELYTRA -> {
+                int distanceByFoot = p.getStatistic(Statistic.WALK_ONE_CM)
+                        + p.getStatistic(Statistic.CROUCH_ONE_CM)
+                        + p.getStatistic(Statistic.SPRINT_ONE_CM);
+                int totalDistance = 0;
+                for (Statistic s : Statistic.values()){
+                    if (s.name().contains("_ONE_CM")){
+                        totalDistance += p.getStatistic(s);
+                    }
+                }
+                lore.add(String.format("$1Total: §b%d", totalDistance));
+                lore.add(String.format("$1By foot: §b%d", distanceByFoot));
+            }
+            default -> lore.add("§cNo lore yet");
+        }
+        return lore;
+    }
 
-        final ItemMeta meta = item.getItemMeta();
+    public void InitializeFirstMobPage(Player p, Inventory i) {
+        i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
+        if (mobs().size() > 9*5/2){
+            inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
+        }
+        AtomicInteger n = new AtomicInteger();
+        n.set(10);
+        getMobKills(mobs(), p).forEach((k,v) -> {
+            if (n.get() < 9*6) {
+                i.setItem(n.get(), (createGuiItem(k, v)));
+                n.getAndAdd(2);
+            }else{
 
-        // Set the name of the
-        String name = String.format("§9%s Kills: %d", entity.getName(), kills);
-        meta.setDisplayName(name);
+            }
+        });
+    }
 
-        item.setItemMeta(meta);
+    public void InitializeSecondMobPage(Player p, Inventory i) {
+        i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
+        if (mobs().size() > 9*5/2){
+            inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
+        }
+        AtomicInteger n = new AtomicInteger();
+        n.set(10);
+        getMobKills(mobs(), p).forEach((k,v) -> {
+            if (n.get() < 9*6) {
+                i.setItem(n.get(), (createGuiItem(k, v)));
+                n.getAndAdd(2);
+            }else{
 
-        return item;
+            }
+        });
     }
 
     public Map<EntityType, Material> mobHeads() {
@@ -169,34 +188,43 @@ public class StatsGUI implements Listener {
         return heads;
     }
 
-    protected List<String> createLore(final Material material, final Player p) {
-        List<String> lore = new ArrayList<>();
-        switch (material) {
-            case DIAMOND_SWORD -> {
-                int playerKills = p.getStatistic(Statistic.PLAYER_KILLS);
-                int mobKills = p.getStatistic(Statistic.MOB_KILLS);
-                lore.add(String.format("§9Player Kills: §b%d", playerKills));
-                lore.add(String.format("§9Mob Kills: %d (§bClick §9to see all Mob specific kills)", mobKills));
-            }
-            case SKELETON_SKULL -> {
-                int totalDeaths = p.getStatistic(Statistic.DEATHS);
-                lore.add(String.format("§9Total Deaths: §b%d", totalDeaths));
-            }
-            case LEATHER_BOOTS -> {
-                int distanceByFoot = p.getStatistic(Statistic.WALK_ONE_CM)
-                        + p.getStatistic(Statistic.CROUCH_ONE_CM)
-                        + p.getStatistic(Statistic.SPRINT_ONE_CM);
-                lore.add(String.format("$9Distance travelled by foot: §b%d", distanceByFoot));
-            }
-            default -> lore.add("§cNo lore yet");
-        }
-        return lore;
+    public List<EntityType> mobs() {
+        List<EntityType> mobs = new ArrayList<>();
+
+        mobHeads().forEach((k,v) -> mobs.add(k));
+        return mobs;
     }
+
+    public Map<EntityType, Integer> getMobKills(List<EntityType> mobs, Player p) {
+        Map<EntityType, Integer> mobKills = new HashMap<>();
+
+        for (EntityType mob : mobs) {
+            mobKills.put(mob, p.getStatistic(Statistic.KILL_ENTITY, mob));
+        }
+
+        return mobKills;
+    }
+
+    protected ItemStack createGuiItem(final EntityType entity, final int kills) {
+        final ItemStack item = new ItemStack(mobHeads().get(entity), 1);
+//                Objects.requireNonNull(Material.getMaterial(material)), 1
+
+        final ItemMeta meta = item.getItemMeta();
+
+        // Set the name of the
+        String name = String.format("§9%s Kills: %d", entity.getName(), kills);
+        meta.setDisplayName(name);
+
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
+
 
     // You can open the inventory with this
     public void openInventory(final HumanEntity ent) {
         ent.openInventory(inv);
-        Player p = (Player) ent;
     }
 
     // Check for clicks on items
@@ -218,7 +246,20 @@ public class StatsGUI implements Listener {
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            initializeMobKills(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            e.getView().setTitle("Mob Kills 1");
+        }
+        if (e.getRawSlot() == 0 && e.getView().getTitle().equals("Mob Kills 1")){
+            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
+            reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+        }
+        if (e.getRawSlot() == 8 && e.getView().getTitle().equals("Mob Kills 2")){
+            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
+            InitializeSecondMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+        }
+        if (e.getRawSlot() == 0 && e.getView().getTitle().equals("Mob Kills 2")){
+            statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
+            InitializeFirstMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
         }
     }
 
