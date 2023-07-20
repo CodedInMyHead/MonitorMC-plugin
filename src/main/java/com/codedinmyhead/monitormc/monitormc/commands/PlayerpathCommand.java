@@ -34,7 +34,7 @@ public class PlayerpathCommand implements CommandExecutor {
 
 
 
-            sender.sendMessage("Position gespeichert");
+            sender.sendMessage("Position gespeichert. Argumente: " + args[0]);
         }
 
         return false;
