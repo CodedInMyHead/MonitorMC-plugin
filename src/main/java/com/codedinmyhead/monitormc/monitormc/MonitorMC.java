@@ -109,6 +109,7 @@ public final class MonitorMC extends JavaPlugin {
         Bukkit.getPluginCommand("dashboards").setExecutor(new DashboardGuiCommand());
         Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());
         Bukkit.getPluginCommand("stats").setExecutor(new DefaultStatsCommand());
+        Bukkit.getPluginCommand("metricdummy").setExecutor(new MetricDummyCommand());
     }
 
     public void createAccuracyBow() {

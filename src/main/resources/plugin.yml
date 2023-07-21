@@ -26,3 +26,5 @@ commands:
       description: Shows a selection of predefined Grafana Dashboards
   stats:
       description: Shows the default minecraft stats
+  metricdummy:
+      description: Increases the diamond ore mined metric for a dummy player; used to test the leaderboard
