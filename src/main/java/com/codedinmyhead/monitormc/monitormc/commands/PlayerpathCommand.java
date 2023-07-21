@@ -8,7 +8,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.dynmap.markers.MarkerAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -16,17 +15,11 @@ import java.util.*;
 
 public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
-    private final MarkerAPI markerAPI = MonitorMC.INSTANCE.markerAPI;
-
     //Speicherung der playerpath-Koordinaten:
     //ArrayList enthält 3 ArrayLists für koordinaten -> je eine für x, y, z
     //Position 0 -> für x; Position 1 -> für y; Position 2 -> für z
     //nutzt uniquePathKey als key
     private Map<String, ArrayList<Location>> collectionPlayerpaths = new HashMap<>();
-
-    //speichert, ob zu dem path aktuell ein Recording läuft (automatische samples) default: false
-    //nutzt ebenfalls uniquePathKey als key
-    private Map<String, Boolean> currentlyRecording = new HashMap<>();
 
     //Speicherung der verschiedenen pathNames zu den paths, welche ein einzelner Spieler erstellen kann
     //nutzt UUID des Spielers als key
@@ -43,9 +36,6 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             //Wechsel zwischen ausgewählten Modi
             if (args[1].equals("sample")) {
                 addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
-            }
-            else if (args[1].equals("record")) {
-                startRecording(p);
             }
             else if (args[1].equals("delete")){
                 deleteThisPlayerpath(p, args[0]);
@@ -90,30 +80,12 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
             if (pathsOfPlayer != null && pathsOfPlayer.contains(args[0])){
                 completions.add("sample");
-                completions.add("record");
                 completions.add("delete");
             }
             else {
                 completions.add("create");
             }
         }
-        else if (args[1].equals("record")) {
-            if (args.length == 3) {
-                if (currentlyRecording.get(getUniquePathKey(p.getUniqueId().toString(), args[0]))){
-                    completions.add("stop");
-                }
-                else{
-                    completions.add("start");
-                }
-            }
-            else if (args.length == 4) {
-                completions.add("<threshold>");
-            }
-            else if (args.length == 5) {
-                completions.add("<sample rate>");
-            }
-        }
-
         return completions;
     }
 
@@ -158,7 +130,6 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
          *
          * leeren Eintrag in collectionPlayerpaths erstellen
          * path zu pathNamesPerPlayer hinzufügen
-         * path zu currentlyRecording hinzufügen und auf FALSE setzen
          * PolyLineMarker erstellen
          */
         String pUUID = p.getUniqueId().toString();
@@ -183,8 +154,6 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
             temporaryPathNames.add(pathName);
             pathNamesPerPlayer.put(pUUID, temporaryPathNames);
         }
-
-        currentlyRecording.put(uniquePathKey, Boolean.FALSE);
 
         double[] coords_x = {pLoc.getX()};
         double[] coords_y = {pLoc.getY()};
@@ -212,15 +181,7 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         thosePathNames.remove(pathName);
         pathNamesPerPlayer.replace(pUUID, thosePathNames);
 
-        currentlyRecording.remove(uniquePathKey);
-
         MonitorMC.INSTANCE.playerPaths.findPolyLineMarker(pName + ";" + pathName).deleteMarker();
-
-    }
-
-    private void startRecording(Player p){
-//        String uniquePathKey, int threshold, int sampleRate,
-        MonitorMC.INSTANCE.runMe(p);
 
     }
 
@@ -228,9 +189,4 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
     private String getUniquePathKey(String pUUID, String pathName){
         return pUUID + pathName;
     }
-
-    private void runThisRepeatedly(){
-
-    }
-
 }

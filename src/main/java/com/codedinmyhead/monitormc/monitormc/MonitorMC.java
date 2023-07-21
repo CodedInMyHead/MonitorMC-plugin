@@ -116,12 +116,4 @@ public final class MonitorMC extends JavaPlugin {
         bowMeta.displayName(Component.text("Accuracy Bow"));
         accuracyBow.setItemMeta(bowMeta);
     }
-
-    public void runMe(Player p){
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            // The statement you want to run every 5 seconds.
-            p.chat("Hallo");
-        }, 0L, 100L); // 20 ticks = 1 second
-    }
-
 }
