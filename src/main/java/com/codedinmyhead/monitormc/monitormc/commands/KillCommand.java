@@ -11,17 +11,12 @@ import java.util.HashMap;
 
 public class KillCommand implements CommandExecutor {
 
-    private ArrowKillListener arrowKillListener;
-
-    public KillCommand(HashMap<String, Integer> bowKillListener) {
-        this.arrowKillListener = arrowKillListener;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            int kills = arrowKillListener.getKillCount(player);
+            int kills = ArrowKillListener.getKillCount(player);
             player.sendMessage("Your kill count: " + kills);
         } else {
             sender.sendMessage("This command can only be used by players.");

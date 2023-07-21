@@ -11,5 +11,5 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
-  killcounter:
+  killcount:
       description: Give a kill count

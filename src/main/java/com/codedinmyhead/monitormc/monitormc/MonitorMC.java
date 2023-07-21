@@ -30,7 +30,7 @@ public final class MonitorMC extends JavaPlugin {
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
 
-    private HashMap<String, Integer> killCounts = new HashMap<>();
+    public HashMap<String, Integer> killCounts = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -39,7 +39,6 @@ public final class MonitorMC extends JavaPlugin {
 
         createAccuracyBow();
 
-        new ArrowKillListener();
 
         MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
 
@@ -65,7 +64,7 @@ public final class MonitorMC extends JavaPlugin {
 
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
-        Bukkit.getPluginCommand("killcount").setExecutor(new KillCommand(killCounts));
+        Bukkit.getPluginCommand("killcount").setExecutor(new KillCommand());
 
     }
 
