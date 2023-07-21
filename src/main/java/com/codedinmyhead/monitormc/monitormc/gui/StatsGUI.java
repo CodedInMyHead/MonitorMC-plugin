@@ -33,9 +33,9 @@ public class StatsGUI implements Listener {
 
     // You can call this whenever you want to put the items in
     public void initializeFirstPage(Player p) {
-        inv.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         AtomicInteger n = new AtomicInteger();
         if (statsItems().size() > 9*5/2){
+            inv.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
             inv.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         n.set(10);
@@ -46,10 +46,10 @@ public class StatsGUI implements Listener {
     }
 
     public void reinitializeFirstPage(Player p, Inventory i) {
-        i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
         AtomicInteger n = new AtomicInteger();
         n.set(10);
         if (statsItems().size() > 9*5/2){
+            i.setItem(0, createGuiItem(Material.PAPER, "BACK", null));
             i.setItem(8, createGuiItem(Material.PAPER, "NEXT", null));
         }
         statsItems().forEach((k,v) -> {
@@ -130,7 +130,7 @@ public class StatsGUI implements Listener {
         }
         AtomicInteger n = new AtomicInteger();
         n.set(10);
-        for (int j = (page-1)*22; j < page*22; j++) {
+        for (int j = (page-1)*22; j < page*22 && j < mobs().size(); j++) {
             EntityType ent = mobs().get(j);
             int kills = getMobKills(mobs(), p).get(mobs().get(j));
             i.setItem(n.get(), (createGuiItem(ent, kills)));
@@ -221,7 +221,8 @@ public class StatsGUI implements Listener {
     // Check for clicks on items
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent e) {
-        if (!e.getInventory().equals(statsMap.get(e.getWhoClicked().getUniqueId()).inv)) return;
+        StatsGUI gui = statsMap.get(e.getWhoClicked().getUniqueId());
+        if (gui == null || !e.getInventory().equals(gui.inv)) return;
 
         e.setCancelled(true);
 
@@ -232,8 +233,6 @@ public class StatsGUI implements Listener {
 
         final Player player = (Player) e.getWhoClicked();
 
-        // Using slots click is the best option for your inventory click's
-        player.sendMessage("You clicked at slot " + e.getRawSlot());
 
         if (e.getCurrentItem().getType().equals(Material.DIAMOND_SWORD)) {
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
@@ -241,23 +240,26 @@ public class StatsGUI implements Listener {
         }
         if (e.getRawSlot() == 8 ){
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
-            e.getWhoClicked().sendMessage("Clicked 8 -- show page:" + mobPage);
-            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage++);
+            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, ++mobPage);
         }
         if (e.getRawSlot() == 0 ){
-            mobPage -= 1;
+            if(mobPage > 0)
+                mobPage -= 1;
             statsMap.get(e.getWhoClicked().getUniqueId()).inv.clear();
             if (mobPage < 1){
                 reinitializeFirstPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv);
+            } else {
+                InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage);
             }
-            InitializeMobPage(player, statsMap.get(e.getWhoClicked().getUniqueId()).inv, mobPage--);
+
         }
     }
 
     // Cancel dragging in our inventory
     @EventHandler
     public void onInventoryClick(final InventoryDragEvent e) {
-        if (e.getInventory().equals(statsMap.get(e.getWhoClicked().getUniqueId()).inv)) {
+        StatsGUI gui = statsMap.get(e.getWhoClicked().getUniqueId());
+        if (gui == null || e.getInventory().equals(gui.inv)) {
             e.setCancelled(true);
         }
     }

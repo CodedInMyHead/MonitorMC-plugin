@@ -22,3 +22,5 @@ commands:
     description: everything with waypoints
   dashboards:
       description: Shows a selection of predefined Grafana Dashboards
+  stats:
+      description: Shows the default minecraft stats
