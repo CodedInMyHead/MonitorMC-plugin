@@ -9,9 +9,20 @@ softdepend:
 commands:
   monitormc:
     description: Test command
+  leaderboard:
+    description: Shows the leaderboards
+    aliases:
+      - top3
+      - lb
   accuracybow:
       description: Gives Player the accuracy bow
       aliases:
         - abow
   path:
     description: Adds current player position to tracked path
+  waypoint:
+    description: everything with waypoints
+  dashboards:
+      description: Shows a selection of predefined Grafana Dashboards
+  stats:
+      description: Shows the default minecraft stats
