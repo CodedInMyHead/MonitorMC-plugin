@@ -18,6 +18,8 @@ commands:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  path:
+    description: Adds current player position to tracked path
   waypoint:
     description: everything with waypoints
   dashboards:

@@ -1,5 +1,8 @@
 package com.codedinmyhead.monitormc.monitormc;
 
+import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
+import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
+import com.codedinmyhead.monitormc.monitormc.commands.PlayerpathCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.*;
 import com.codedinmyhead.monitormc.monitormc.gui.DashboardGUI;
 import com.codedinmyhead.monitormc.monitormc.gui.StatsGUI;
@@ -22,13 +25,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.*;
-
+import java.util.logging.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
 public final class MonitorMC extends JavaPlugin {
 
     public static MonitorMC INSTANCE;
@@ -41,6 +41,9 @@ public final class MonitorMC extends JavaPlugin {
     public Material targetBlockMaterial = Material.RED_WOOL;
 
     public MarkerAPI markerAPI = null;
+
+    //Markerset für Polylines der playerpaths
+    public MarkerSet playerPaths = null;
     public DashboardGUI dashboardGUI;
     private File customDashboardConfigFile;
     private FileConfiguration customDashboardConfig;
@@ -48,7 +51,7 @@ public final class MonitorMC extends JavaPlugin {
     public final static TopThreeGUI topThreeGUI = new TopThreeGUI();
 
     public StatsGUI statsGui = new StatsGUI(null);
-  
+
     @Override
     public void onEnable() {
         Logger l = this.getLogger();
@@ -59,7 +62,11 @@ public final class MonitorMC extends JavaPlugin {
 
             }
         });
-    
+
+        if (markerAPI != null) {
+            playerPaths = markerAPI.createMarkerSet("playerPaths", "playerPaths Test Set", null, false);
+        }
+
         createAccuracyBow();
 
         createCustomDashboardConfigFile();
@@ -95,6 +102,7 @@ public final class MonitorMC extends JavaPlugin {
     public void registerCommands() {
         Bukkit.getPluginCommand("monitormc").setExecutor(new MonitorCommand());
         Bukkit.getPluginCommand("accuracybow").setExecutor(new AccuracyBowCommand());
+        Bukkit.getPluginCommand("path").setExecutor(new PlayerpathCommand());
         PluginCommand waypointCommand = Bukkit.getPluginCommand("waypoint");
         waypointCommand.setExecutor(new WaypointSet());
         waypointCommand.setTabCompleter(new WaypointSet());
