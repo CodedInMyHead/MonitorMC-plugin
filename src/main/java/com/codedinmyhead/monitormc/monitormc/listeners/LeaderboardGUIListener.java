@@ -79,6 +79,8 @@ public class LeaderboardGUIListener implements Listener {
                 meta.setDisplayName("§2Current Mode: Best");
                 clickedItem.setItemMeta(meta);
             }
+            inventory.clear();
+            gui.leaderboardScreen(e, inventory);
         }
 
         if (clickedItem.getType() == Material.SUNFLOWER) {
