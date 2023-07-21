@@ -8,13 +8,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
-import org.dynmap.markers.MarkerSet;
-import org.dynmap.markers.PolyLineMarker;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
 
 public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
@@ -47,7 +45,7 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
                 addCoordinatesToPlayerpath(pLoc, pUUID, args[0]);
             }
             else if (args[1].equals("record")) {
-
+                startRecording(p);
             }
             else if (args[1].equals("delete")){
                 deleteThisPlayerpath(p, args[0]);
@@ -220,7 +218,9 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
 
     }
 
-    private void startRecording(String uniquePathKey, int threshold, int sampleRate){
+    private void startRecording(Player p){
+//        String uniquePathKey, int threshold, int sampleRate,
+        MonitorMC.INSTANCE.runMe(p);
 
     }
 
@@ -229,5 +229,8 @@ public class PlayerpathCommand implements CommandExecutor, TabCompleter {
         return pUUID + pathName;
     }
 
+    private void runThisRepeatedly(){
+
+    }
 
 }

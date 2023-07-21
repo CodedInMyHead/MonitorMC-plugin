@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.dynmap.DynmapAPI;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
@@ -114,6 +115,13 @@ public final class MonitorMC extends JavaPlugin {
         ItemMeta bowMeta = accuracyBow.getItemMeta();
         bowMeta.displayName(Component.text("Accuracy Bow"));
         accuracyBow.setItemMeta(bowMeta);
+    }
+
+    public void runMe(Player p){
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            // The statement you want to run every 5 seconds.
+            p.chat("Hallo");
+        }, 0L, 100L); // 20 ticks = 1 second
     }
 
 }
