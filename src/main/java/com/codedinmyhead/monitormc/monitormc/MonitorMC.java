@@ -12,9 +12,7 @@ import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,25 +22,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.dynmap.DynmapAPI;
 import org.dynmap.DynmapCommonAPI;
 import org.dynmap.DynmapCommonAPIListener;
 import org.dynmap.markers.*;
-import org.jetbrains.annotations.NotNull;
-import org.dynmap.DynmapCommonAPI;
-import org.dynmap.DynmapCommonAPIListener;
-import org.dynmap.markers.*;
-
-import java.lang.reflect.Array;
-import java.util.*;
 import java.util.logging.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
 public final class MonitorMC extends JavaPlugin {
 
     public static MonitorMC INSTANCE;
@@ -76,6 +62,10 @@ public final class MonitorMC extends JavaPlugin {
 
             }
         });
+
+        if (markerAPI != null) {
+            playerPaths = markerAPI.createMarkerSet("playerPaths", "playerPaths Test Set", null, false);
+        }
 
         createAccuracyBow();
 
