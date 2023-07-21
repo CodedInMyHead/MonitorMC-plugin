@@ -28,3 +28,5 @@ commands:
       description: Shows the default minecraft stats
   metricdummy:
       description: Increases the diamond ore mined metric for a dummy player; used to test the leaderboard
+  killcount:
+      description: Give a kill count

@@ -7,11 +7,11 @@ import org.bukkit.Material;
 @Getter
 public enum MetricsEnum implements IMonitoringMetric {
 
-    // GOLD, IRON, COPPER-Blocks, Comparator, OAK_SIGN and SUNFLOWER are not valid and will bug the leaderboard out
-
     ARROW_HIT("arrowhit", Counter.class, Tags.empty(), false, true, "Arrows hit", new String[]{"Count of Arrows hit"}, Material.ARROW),
     ARROW_MISS("arrowmiss", Counter.class, Tags.empty(), false, true, "Arrows missed",  new String[]{"Count of Arrows missed"}, Material.ARROW),
     TIMES_SLEPT("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),
+    HOSTILE_MOBS_KILLED("hostile_mobs_killed",Counter.class, Tags.empty(), false, true, "Enemies Mobs Killed", new String[] {"How many hostile mobs","or players killed"}, Material.ZOMBIE_HEAD ),
+    // GOLD, IRON, COPPER-Blocks, Comparator, OAK_SIGN and SUNFLOWER are not valid and will bug the leaderboard out
     DIAMONDS_MINED("diamonds_mined", Counter.class, Tags.empty(), false, true, "Diamond Ore mined", new String[]{"How many Diamond Ores a player has mined"}, Material.DIAMOND_ORE),
     NUMBERS_SAID_COUNT("numbers_said", Counter.class, Tags.empty(), false, true, "Sum of numbers said in Chat", new String[]{"Sums up all of the numbers", "that a player said in chat"}, Material.COMMAND_BLOCK),
     DUMMY3("times_slept", Counter.class, Tags.empty(), false, true, "Times Slept",  new String[]{"How many times a player has slept"}, Material.RED_BED),

@@ -1,5 +1,6 @@
 package com.codedinmyhead.monitormc.monitormc;
 
+import com.codedinmyhead.monitormc.monitormc.commands.KillCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.MonitorCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.AccuracyBowCommand;
 import com.codedinmyhead.monitormc.monitormc.commands.PlayerpathCommand;
@@ -7,6 +8,7 @@ import com.codedinmyhead.monitormc.monitormc.commands.*;
 import com.codedinmyhead.monitormc.monitormc.gui.DashboardGUI;
 import com.codedinmyhead.monitormc.monitormc.gui.StatsGUI;
 import com.codedinmyhead.monitormc.monitormc.gui.TopThreeGUI;
+import com.codedinmyhead.monitormc.monitormc.listeners.ArrowKillListener;
 import com.codedinmyhead.monitormc.monitormc.listeners.common.ActivatedListeners;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricService;
 import com.codedinmyhead.monitormc.monitormc.monitoring.MetricsEnum;
@@ -29,6 +31,8 @@ import java.util.logging.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+
 public final class MonitorMC extends JavaPlugin {
 
     public static MonitorMC INSTANCE;
@@ -39,6 +43,8 @@ public final class MonitorMC extends JavaPlugin {
 
     public ItemStack accuracyBow;
     public Material targetBlockMaterial = Material.RED_WOOL;
+
+    public HashMap<String, Integer> killCounts = new HashMap<>();
 
     public MarkerAPI markerAPI = null;
 
@@ -71,6 +77,7 @@ public final class MonitorMC extends JavaPlugin {
 
         createCustomDashboardConfigFile();
         this.dashboardGUI = new DashboardGUI();
+
 
         MetricService.getInstance().initializeMetrics(Arrays.asList(MetricsEnum.values()));
 
@@ -110,6 +117,8 @@ public final class MonitorMC extends JavaPlugin {
         Bukkit.getPluginCommand("leaderboard").setExecutor(new TopThreeCommand());
         Bukkit.getPluginCommand("stats").setExecutor(new DefaultStatsCommand());
         Bukkit.getPluginCommand("metricdummy").setExecutor(new MetricDummyCommand());
+        Bukkit.getPluginCommand("killcount").setExecutor(new KillCommand());
+
     }
 
     public void createAccuracyBow() {
