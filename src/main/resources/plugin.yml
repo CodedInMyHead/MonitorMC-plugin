@@ -4,12 +4,29 @@ main: com.codedinmyhead.monitormc.monitormc.MonitorMC
 api-version: '1.20'
 prefix: MonitorMC
 authors: [ Micha, Ole, Shanine ]
+softdepend:
+  - dynmap
 commands:
   monitormc:
     description: Test command
+  leaderboard:
+    description: Shows the leaderboards
+    aliases:
+      - top3
+      - lb
   accuracybow:
       description: Gives Player the accuracy bow
       aliases:
         - abow
+  path:
+    description: Adds current player position to tracked path
+  waypoint:
+    description: everything with waypoints
+  dashboards:
+      description: Shows a selection of predefined Grafana Dashboards
+  stats:
+      description: Shows the default minecraft stats
+  metricdummy:
+      description: Increases the diamond ore mined metric for a dummy player; used to test the leaderboard
   killcount:
       description: Give a kill count
